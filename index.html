@@ -1,12 +1,638 @@
-<!-- GitHub Pages SPA Router -->
-<script>
-    // Handle GitHub Pages 404s for SPA routing
-    (function() {
-        // Redirect from 404.html to the correct route
-        const redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (redirect && redirect != location.href) {
-            history.replaceState(null, null, redirect);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>And Other Stuff - Oslo 2026</title>
+    
+    <!-- GitHub Pages Base URL -->
+    <script>
+        const base = document.createElement('base');
+        const isGitHubPages = location.hostname.includes('github.io');
+        const repoName = 'AOS-Convergence'; // ← THIS IS CORRECT NOW
+        base.href = isGitHubPages ? `/${repoName}/` : '/';
+        document.head.appendChild(base);
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/nostr-tools@2.3.1/lib/nostr.bundle.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Space Grotesk', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            overflow-x: hidden;
         }
-    })();
-</script>
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glow { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-field {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+        .hidden-section { display: none; }
+        .active-section {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="min-h-screen grid-bg">
+    <div class="noise"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 cursor-pointer" onclick="showSection('home')">
+                    <span class="text-2xl font-bold tracking-tighter gradient-text">AND OTHER STUFF</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <button onclick="showSection('home')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Home</button>
+                        <button onclick="showSection('program')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Program</button>
+                        <button onclick="showSection('location')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Location</button>
+                        <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono">[ LOGIN ]</button>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-black/95 border-b border-white/10">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="showSection('home')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Home</button>
+                <button onclick="showSection('program')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Program</button>
+                <button onclick="showSection('location')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Location</button>
+                <button onclick="toggleAuth()" class="text-purple-400 hover:text-purple-300 block px-3 py-2 text-base font-medium w-full text-left mono">[ LOGIN ]</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black/90 transition-opacity" onclick="toggleAuth()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+            <div class="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-white/20">
+                <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-white mb-4">Authenticate with Nostr</h3>
+                    <div class="mt-2 space-y-4">
+                        <p class="text-sm text-gray-400">Sign in using your Nostr extension (NIP-07) or provide your npub.</p>
+                        <div id="authOptions">
+                            <button onclick="authWithExtension()" class="w-full btn-primary text-white font-bold py-3 px-4 rounded mb-3 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Sign with Extension (NIP-07)
+                            </button>
+                            <div class="relative my-4">
+                                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-700"></div></div>
+                                <div class="relative flex justify-center text-sm"><span class="px-2 bg-gray-900 text-gray-500">Or</span></div>
+                            </div>
+                            <input type="text" id="manualNpub" placeholder="Enter npub..." class="w-full input-field rounded px-4 py-3 text-white mb-3 mono text-sm">
+                            <button onclick="authManual()" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded border border-white/20">
+                                Continue with npub
+                            </button>
+                        </div>
+                        <div id="authLoading" class="hidden text-center py-4">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-2"></div>
+                            <p class="text-sm text-gray-400">Verifying...</p>
+                        </div>
+                        <div id="authError" class="hidden bg-red-900/50 border border-red-500/50 rounded p-3 text-sm text-red-200"></div>
+                    </div>
+                </div>
+                <div class="bg-gray-900/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-white/10">
+                    <button onclick="toggleAuth()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-600 px-4 py-2 bg-transparent text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Home Section -->
+        <section id="home" class="active-section min-h-screen flex items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+                <div class="absolute top-40 right-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 2s"></div>
+                <div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-600 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style="animation-delay: 4s"></div>
+            </div>
+
+            <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="mb-8">
+                    <span class="mono text-sm text-purple-400 tracking-widest border border-purple-500/30 rounded-full px-4 py-1">OSLO, NORWAY</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                    <span class="block text-white mb-2">AND</span>
+                    <span class="block gradient-text">OTHER</span>
+                    <span class="block text-white">STUFF</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-400 mb-4 mono">29th — 31st May 2026</p>
+                <p class="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">A gathering for the Nostr community. Three days of talks, workshops, and connection in the heart of Oslo.</p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="checkAuthAndShowRegister()" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg glow">Register Now →</button>
+                    <button onclick="showSection('location')" class="bg-white/5 hover:bg-white/10 text-white border border-white/20 font-bold py-4 px-8 rounded-full text-lg transition-all">Learn More</button>
+                </div>
+
+                <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="card p-6 rounded-2xl">
+                        <div class="text-3xl mb-2">🔑</div>
+                        <h3 class="text-lg font-semibold mb-1">Nostr Native</h3>
+                        <p class="text-sm text-gray-400">Sign in with your existing keys. No passwords needed.</p>
+                    </div>
+                    <div class="card p-6 rounded-2xl">
+                        <div class="text-3xl mb-2">🏔️</div>
+                        <h3 class="text-lg font-semibold mb-1">Oslo Venue</h3>
+                        <p class="text-sm text-gray-400">Hosted at Blå, a historic venue in Grünerløkka.</p>
+                    </div>
+                    <div class="card p-6 rounded-2xl">
+                        <div class="text-3xl mb-2">💬</div>
+                        <h3 class="text-lg font-semibold mb-1">Private Chat</h3>
+                        <p class="text-sm text-gray-400">Signal integration for attendees.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section id="registration" class="hidden-section min-h-screen py-20 px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="card rounded-3xl p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold mb-2 gradient-text">Registration</h2>
+                        <p class="text-gray-400">Complete your event registration</p>
+                        <div id="userNpubDisplay" class="mt-4 mono text-xs text-purple-400 break-all"></div>
+                    </div>
+
+                    <form id="registrationForm" onsubmit="handleRegistration(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
+                                <input type="text" name="fullName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="Satoshi Nakamoto">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Name for Badge *</label>
+                                <input type="text" name="badgeName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="satoshi">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Email *</label>
+                                <input type="email" name="email" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="satoshi@example.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Signal Handle / Phone</label>
+                                <input type="text" name="signal" class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="+47 000 00 000">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Dietary Requirements</label>
+                            <textarea name="dietary" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Vegan, Vegetarian, Gluten Free, Allergies, etc..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">T-Shirt Preferences</label>
+                            <textarea name="tshirt" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Color, Size (S/M/L/XL/XXL), Style preferences..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Accessibility Needs</label>
+                            <textarea name="accessibility" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Any accessibility requirements we should know about..."></textarea>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full btn-primary text-white font-bold py-4 rounded-lg text-lg">Complete Registration</button>
+                        </div>
+
+                        <div id="registrationSuccess" class="hidden bg-green-900/50 border border-green-500/50 rounded-lg p-4 text-center">
+                            <p class="text-green-200 font-semibold">Registration successful! Check your email for confirmation.</p>
+                            <p class="text-green-300/70 text-sm mt-1">Signal chat access will be sent to your email.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Section -->
+        <section id="program" class="hidden-section min-h-screen py-20 px-4">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Program</h2>
+                
+                <div class="space-y-8">
+                    <div class="card rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-white">Day 1 — Friday 29th</h3>
+                            <span class="mono text-purple-400">Opening Day</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
+                                <div class="mono text-purple-400 w-20 shrink-0">09:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-lg">Registration & Coffee</h4>
+                                    <p class="text-gray-400 text-sm">Pick up your badge and meet fellow attendees</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
+                                <div class="mono text-purple-400 w-20 shrink-0">10:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-lg">Opening Keynote</h4>
+                                    <p class="text-gray-400 text-sm">State of the Nostr ecosystem</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
+                                <div class="mono text-purple-400 w-20 shrink-0">19:00</div>
+                                <div>
+                                    <h4 class="font-semibold text-lg">Welcome Dinner</h4>
+                                    <p class="text-gray-400 text-sm">Networking and Norwegian cuisine</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-white">Day 2 — Saturday 30th</h3>
+                            <span class="mono text-purple-400">Main Conference</span>
+                        </div>
+                        <div class="p-8 text-center text-gray-500 border-2 border-dashed border-white/10 rounded-xl">
+                            <p>Full program schedule coming soon...</p>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-white">Day 3 — Sunday 31st</h3>
+                            <span class="mono text-purple-400">Closing Day</span>
+                        </div>
+                        <div class="p-8 text-center text-gray-500 border-2 border-dashed border-white/10 rounded-xl">
+                            <p>Full program schedule coming soon...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section id="location" class="hidden-section min-h-screen py-20 px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Location</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                    <div class="card rounded-3xl overflow-hidden">
+                        <div class="h-64 bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center relative">
+                            <div class="text-center z-10">
+                                <h3 class="text-3xl font-bold text-white mb-2">Blå</h3>
+                                <p class="text-purple-200">Brenneriveien 9C, Oslo</p>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <p class="text-gray-300 mb-4">
+                                Located in the heart of Grünerløkka, Blå is Oslo's premier venue for live music and events. 
+                                Housed in a former factory building by the Akerselva river.
+                            </p>
+                            <ul class="space-y-2 text-sm text-gray-400 mb-6">
+                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Capacity: 420 people</li>
+                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Established: 1998</li>
+                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Historic industrial venue</li>
+                            </ul>
+                            <a href="https://www.blaaoslo.no/" target="_blank" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
+                                Visit Venue Website
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="card rounded-3xl p-8">
+                            <h3 class="text-xl font-bold mb-4 text-white">Getting There</h3>
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">✈</span></div>
+                                    <div>
+                                        <h4 class="font-semibold">Airport</h4>
+                                        <p class="text-sm text-gray-400">OSL Gardermoen is 45 minutes by train to Oslo Central Station</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">🚇</span></div>
+                                    <div>
+                                        <h4 class="font-semibold">Public Transport</h4>
+                                        <p class="text-sm text-gray-400">Tram 11, 12, 13 or Bus 30 to Olaf Ryes plass</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">🏨</span></div>
+                                    <div>
+                                        <h4 class="font-semibold">Accommodation</h4>
+                                        <p class="text-sm text-gray-400">Grünerløkka area recommended. Try Anker Hotel or CityBox</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card rounded-3xl p-8">
+                            <h3 class="text-xl font-bold mb-4 text-white">About Oslo</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Norway's capital combines modern architecture with historic charm. In late May, 
+                                enjoy the midnight sun with 18+ hours of daylight. The Grünerløkka district 
+                                is known for its street art, vintage shops, and vibrant café culture.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card rounded-3xl p-2 h-96 relative overflow-hidden">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1999.0!2d10.7528!3d59.9203!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46416e61f267f039%3A0x7c5c5c5c5c5c5c5c!2sBl%C3%A5!5e0!3m2!1sen!2sno!4v1600000000000!5m2!1sen!2sno" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="rounded-2xl opacity-80">
+                    </iframe>
+                    <div class="absolute bottom-4 left-4 bg-black/80 backdrop-blur px-4 py-2 rounded-lg border border-white/10">
+                        <p class="text-sm font-medium">Blå, Brenneriveien 9C</p>
+                        <p class="text-xs text-gray-400">0182 Oslo, Norway</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Signal Chat Widget -->
+    <div id="signalChat" class="hidden fixed bottom-4 right-4 z-40"></div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-black/50 backdrop-blur-md mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <span class="text-xl font-bold gradient-text">AND OTHER STUFF</span>
+                    <p class="text-sm text-gray-500 mt-1">Oslo, Norway • May 29-31, 2026</p>
+                </div>
+                <div class="flex space-x-6 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Code of Conduct</a>
+                    <a href="https://nostr.com" target="_blank" class="hover:text-white transition-colors">Nostr Protocol</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/5 text-center text-xs text-gray-600 mono">
+                Built for the Nostr community • andotherstuff.org
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // GitHub Pages SPA Router
+        (function() {
+            const redirect = sessionStorage.redirect;
+            delete sessionStorage.redirect;
+            if (redirect && redirect != location.href) {
+                history.replaceState(null, null, redirect);
+            }
+        })();
+
+        let currentUser = null;
+
+        function showSection(sectionId) {
+            const basePath = location.pathname.replace(/\/$/, '');
+            const newUrl = `${basePath}/#${sectionId}`;
+            history.pushState({section: sectionId}, '', newUrl);
+            
+            document.querySelectorAll('main > section').forEach(section => {
+                section.classList.remove('active-section');
+                section.classList.add('hidden-section');
+            });
+            
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.remove('hidden-section');
+                target.classList.add('active-section');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+            
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+        }
+
+        window.addEventListener('popstate', (e) => {
+            const hash = location.hash.slice(1) || 'home';
+            showSection(hash);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = location.hash.slice(1) || 'home';
+            showSection(hash);
+            checkExistingAuth();
+        });
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function toggleAuth() {
+            const modal = document.getElementById('authModal');
+            modal.classList.toggle('hidden');
+            document.getElementById('authOptions').classList.remove('hidden');
+            document.getElementById('authLoading').classList.add('hidden');
+            document.getElementById('authError').classList.add('hidden');
+        }
+
+        async function authWithExtension() {
+            document.getElementById('authOptions').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+
+            try {
+                if (!window.nostr) {
+                    throw new Error('No Nostr extension found. Please install Alby, nos2x, or similar.');
+                }
+
+                const pubkey = await window.nostr.getPublicKey();
+                const authEvent = {
+                    kind: 27235,
+                    created_at: Math.floor(Date.now() / 1000),
+                    content: '',
+                    tags: [
+                        ['u', window.location.origin + '/api/auth'],
+                        ['method', 'POST']
+                    ],
+                    pubkey: pubkey
+                };
+
+                const signedEvent = await window.nostr.signEvent(authEvent);
+                
+                currentUser = {
+                    pubkey: pubkey,
+                    npub: 'npub' + pubkey
+                };
+                
+                updateUIForLoggedInUser();
+                toggleAuth();
+                
+            } catch (error) {
+                showAuthError(error.message);
+            }
+        }
+
+        function authManual() {
+            const npub = document.getElementById('manualNpub').value.trim();
+            if (!npub || !npub.startsWith('npub')) {
+                showAuthError('Please enter a valid npub');
+                return;
+            }
+            currentUser = { npub: npub, pubkey: npub };
+            updateUIForLoggedInUser();
+            toggleAuth();
+        }
+
+        function showAuthError(message) {
+            document.getElementById('authLoading').classList.add('hidden');
+            document.getElementById('authOptions').classList.remove('hidden');
+            const errorDiv = document.getElementById('authError');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function updateUIForLoggedInUser() {
+            const btn = document.getElementById('authBtn');
+            btn.textContent = `[ ${currentUser.npub.slice(0, 8)}... ]`;
+            btn.onclick = logout;
+            btn.classList.remove('text-purple-400');
+            btn.classList.add('text-green-400');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('aos_auth');
+            location.reload();
+        }
+
+        function checkExistingAuth() {
+            const saved = localStorage.getItem('aos_auth');
+            if (saved) {
+                try {
+                    currentUser = JSON.parse(saved);
+                    updateUIForLoggedInUser();
+                } catch(e) {
+                    localStorage.removeItem('aos_auth');
+                }
+            }
+        }
+
+        function checkAuthAndShowRegister() {
+            if (!currentUser) {
+                toggleAuth();
+                return;
+            }
+            showSection('registration');
+            document.getElementById('userNpubDisplay').textContent = `Authenticated: ${currentUser.npub}`;
+        }
+
+        function handleRegistration(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                alert('Please authenticate first');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            console.log('Registration:', data);
+            
+            document.getElementById('registrationSuccess').classList.remove('hidden');
+            e.target.reset();
+            
+            setTimeout(() => {
+                initSignalChat();
+            }, 1000);
+            
+            localStorage.setItem('aos_auth', JSON.stringify(currentUser));
+        }
+
+        function initSignalChat() {
+            window.signalZenSettings = {
+                phoneNumber: "+47YOURNUMBER",
+                welcomeMessage: "Welcome to And Other Stuff! How can we help?",
+                position: "right",
+                backgroundColor: "#667eea",
+                textColor: "#ffffff"
+            };
+
+            const script = document.createElement('script');
+            script.src = "https://cdn.signalzen.com/signalzen.js";
+            script.async = true;
+            document.body.appendChild(script);
+
+            document.getElementById('signalChat').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

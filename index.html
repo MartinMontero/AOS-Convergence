@@ -1,0 +1,12 @@
+<!-- GitHub Pages SPA Router -->
+<script>
+    // Handle GitHub Pages 404s for SPA routing
+    (function() {
+        // Redirect from 404.html to the correct route
+        const redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+            history.replaceState(null, null, redirect);
+        }
+    })();
+</script>

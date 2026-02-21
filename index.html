@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>And Other Stuff - The Convergence</title>
-    
-    <!-- Favicon -->
+
+    <!-- Favicon - Using the logo -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>＆</text></svg>">
-    
+
+    <!-- Force redirect to #home on first load -->
+    <script>
+        if (!window.location.hash) {
+            window.location.replace(window.location.pathname + '#home');
+        }
+    </script>
+
     <!-- GitHub Pages Base URL -->
     <script>
         const base = document.createElement('base');
@@ -16,7 +23,7 @@
         base.href = isGitHubPages ? `/${repoName}/` : '/';
         document.head.appendChild(base);
     </script>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/nostr-tools@2.3.1/lib/nostr.bundle.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -116,87 +123,78 @@
             background: rgba(0,0,0,0.7);
             z-index: 10;
         }
-        #signal-chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        .signal-chat-button {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s;
-        }
-        .signal-chat-button:hover {
-            transform: scale(1.1);
-        }
-        .signal-chat-window {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .signal-chat-window.active {
-            display: flex;
-        }
-        .signal-chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 16px;
-            color: white;
-        }
-        .signal-chat-body {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .ampersand-logo {
-            font-weight: 900;
-            font-size: 1.2em;
-            display: inline-block;
-            transform: scale(1.1);
-        }
         .nav-hidden {
             display: none !important;
         }
         .nav-visible {
             display: inline-flex !important;
         }
+        /* Logo styles */
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Hero logo styling */
+        .hero-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .hero-logo {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+        .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #a78bfa;
+            letter-spacing: 0.2em;
+            margin-top: 0.5rem;
+        }
     </style>
+<base target="_blank">
 </head>
 <body class="min-h-screen grid-bg">
     <div class="noise"></div>
-    
+
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 cursor-pointer" onclick="showSection('home')">
-                    <span class="text-2xl font-bold tracking-tighter gradient-text">
-                        <span class="ampersand-logo">＆</span> OTHER STUFF - THE CONVERGENCE
-                    </span>
+                <div class="flex-shrink-0 cursor-pointer logo-container" onclick="showSection('home')">
+                    <!-- SVG Logo -->
+                    <svg class="logo-img" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ampersand symbol -->
+                        <text x="10" y="45" font-family="Georgia, serif" font-size="48" font-weight="bold" fill="url(#gradient)">&</text>
+                        <!-- OTHER STUFF text -->
+                        <text x="55" y="28" font-family="Inter, sans-serif" font-size="20" font-weight="800" fill="white">OTHER</text>
+                        <text x="55" y="50" font-family="Inter, sans-serif" font-size="20" font-weight="800" fill="white">STUFF</text>
+                        <!-- THE CONVERGENCE text -->
+                        <text x="140" y="28" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#a78bfa">THE</text>
+                        <text x="140" y="50" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#a78bfa">CONVERGENCE</text>
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
                         <button onclick="showSection('home')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Home</button>
                         <button onclick="checkAuthAndShow('program')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Program</button>
                         <button onclick="checkAuthAndShow('location')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Location</button>
-                        <button id="exploreNavBtn" onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium nav-hidden">Explore Oslo</button>
+                        <button id="exploreNavBtn" onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm medium nav-hidden">Explore Oslo</button>
                         <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono">[ LOGIN ]</button>
                     </div>
                 </div>
@@ -272,16 +270,32 @@
                 <div class="mb-8">
                     <span class="mono text-sm text-purple-400 tracking-widest border border-purple-500/30 rounded-full px-4 py-1">OSLO, NORWAY</span>
                 </div>
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-                    <span class="block gradient-text"><span class="ampersand-logo">＆</span> OTHER</span>
-                    <span class="block text-white">STUFF</span>
-                    <span class="block text-3xl md:text-4xl mt-4 text-purple-300">THE CONVERGENCE</span>
-                </h1>
+
+                <!-- Main Logo Display - Using the uploaded logo style -->
+                <div class="hero-logo-container">
+                    <svg class="hero-logo" viewBox="0 0 400 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Large Ampersand - Serif style like the logo -->
+                        <text x="20" y="95" font-family="Georgia, Times New Roman, serif" font-size="110" font-weight="bold" fill="url(#mainGradient)">&</text>
+                        <!-- OTHER -->
+                        <text x="140" y="55" font-family="Inter, sans-serif" font-size="52" font-weight="800" fill="url(#mainGradient)" letter-spacing="-0.02em">OTHER</text>
+                        <!-- STUFF -->
+                        <text x="140" y="105" font-family="Inter, sans-serif" font-size="52" font-weight="800" fill="white" letter-spacing="-0.02em">STUFF</text>
+                        <!-- THE CONVERGENCE - positioned below -->
+                        <text x="140" y="130" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#a78bfa" letter-spacing="0.15em">THE CONVERGENCE</text>
+                        <defs>
+                            <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
                 <p class="text-xl md:text-2xl text-gray-400 mb-4 mono">29th — 31st May 2026</p>
-                
+
                 <div class="max-w-3xl mx-auto mb-12 text-left space-y-4">
                     <p class="text-lg text-gray-300 leading-relaxed">
-                        You are part of a curated list of humans we want to get to know better—and who we want to share what <span class="ampersand-logo">＆</span>Other Stuff is really up to.
+                        You are part of a curated list of humans we want to get to know better—and who we want to share what <span class="font-bold text-purple-400">&</span>Other Stuff is really up to.
                     </p>
                     <p class="text-gray-400 leading-relaxed">
                         Our name is an homage to the "Other Stuff" in Nostr, because we believe that's where the magic lives. It's in the unexpected ideas, the permissionless tools, and the communities that emerge when technology is truly open.
@@ -290,9 +304,9 @@
                         This isn't an ordinary gathering; it's an invitation to explore that broader landscape with us. Join a group of dreamers and builders who believe that open protocols can—and will—save the world by bringing these new possibilities to life.
                     </p>
                 </div>
-                
+
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="checkAuthAndShowRegister()" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg glow">Register Now →</button>
+                    <button onclick="goToRegistration()" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg glow">Register Now →</button>
                     <button onclick="checkAuthAndShow('location')" class="bg-white/5 hover:bg-white/10 text-white border border-white/20 font-bold py-4 px-8 rounded-full text-lg transition-all">Learn More</button>
                 </div>
 
@@ -381,6 +395,11 @@
                             <p class="text-green-200 font-semibold">Registration successful!</p>
                             <p class="text-green-300/70 text-sm mt-1">You now have full access to all content and Signal chat.</p>
                         </div>
+
+                        <div id="alreadyRegistered" class="hidden bg-yellow-900/50 border border-yellow-500/50 rounded-lg p-4 text-center">
+                            <p class="text-yellow-200 font-semibold">This npub has already been registered.</p>
+                            <p class="text-yellow-300/70 text-sm mt-1">Each approved npub can only register once.</p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -391,61 +410,130 @@
             <div id="programLock" class="lock-overlay rounded-3xl">
                 <div class="text-center">
                     <div class="text-6xl mb-4">🔒</div>
-                    <p class="text-xl text-white mb-4">Program details available after login</p>
+                    <p class="text-xl text-white mb-4">Program details are private</p>
                     <button onclick="toggleAuth()" class="btn-primary text-white font-bold py-3 px-6 rounded-full">Login with Nostr</button>
                 </div>
             </div>
-            <div class="max-w-5xl mx-auto protected-content" id="programContent">
-                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Program</h2>
-                
+            <div class="max-w-6xl mx-auto protected-content" id="programContent">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-4 gradient-text">Program</h2>
+                    <p class="text-gray-400 text-lg">Three days of convergence in Oslo</p>
+                </div>
+
                 <div class="space-y-8">
-                    <div class="card rounded-3xl p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-white">Day 1 — Friday 29th</h3>
-                            <span class="mono text-purple-400">Opening Day</span>
+                    <!-- Day 1 -->
+                    <div class="card rounded-2xl p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full font-bold mono">DAY 1</div>
+                            <div>
+                                <h3 class="text-2xl font-bold">Friday, May 29th</h3>
+                                <p class="text-gray-400">Arrival & Opening</p>
+                            </div>
                         </div>
                         <div class="space-y-4">
-                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
-                                <div class="mono text-purple-400 w-20 shrink-0">09:00</div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">14:00</span>
                                 <div>
-                                    <h4 class="font-semibold text-lg">Registration & Coffee</h4>
-                                    <p class="text-gray-400 text-sm">Pick up your badge and meet fellow attendees</p>
+                                    <h4 class="font-semibold">Registration Opens</h4>
+                                    <p class="text-gray-400 text-sm">Pick up your badge and welcome package</p>
                                 </div>
                             </div>
-                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
-                                <div class="mono text-purple-400 w-20 shrink-0">10:00</div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">16:00</span>
                                 <div>
-                                    <h4 class="font-semibold text-lg">Opening Keynote</h4>
-                                    <p class="text-gray-400 text-sm">State of the <span class="ampersand-logo">＆</span>Other Stuff Collective</p>
+                                    <h4 class="font-semibold">Opening Ceremony</h4>
+                                    <p class="text-gray-400 text-sm">Welcome address and event overview</p>
                                 </div>
                             </div>
-                            <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
-                                <div class="mono text-purple-400 w-20 shrink-0">19:00</div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">18:00</span>
                                 <div>
-                                    <h4 class="font-semibold text-lg">Welcome Dinner</h4>
-                                    <p class="text-gray-400 text-sm">Networking and Norwegian cuisine</p>
+                                    <h4 class="font-semibold">Welcome Dinner</h4>
+                                    <p class="text-gray-400 text-sm">Networking dinner with fellow attendees</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card rounded-3xl p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-white">Day 2 — Saturday 30th</h3>
-                            <span class="mono text-purple-400">Main Conference</span>
+                    <!-- Day 2 -->
+                    <div class="card rounded-2xl p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full font-bold mono">DAY 2</div>
+                            <div>
+                                <h3 class="text-2xl font-bold">Saturday, May 30th</h3>
+                                <p class="text-gray-400">Main Event Day</p>
+                            </div>
                         </div>
-                        <div class="p-8 text-center text-gray-500 border-2 border-dashed border-white/10 rounded-xl">
-                            <p>Full program schedule coming soon...</p>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">09:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Breakfast & Networking</h4>
+                                    <p class="text-gray-400 text-sm">Morning gathering</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">10:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Keynote Sessions</h4>
+                                    <p class="text-gray-400 text-sm">Main presentations and talks</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">13:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Lunch</h4>
+                                    <p class="text-gray-400 text-sm">Catered lunch at venue</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">14:30</span>
+                                <div>
+                                    <h4 class="font-semibold">Workshops & Breakouts</h4>
+                                    <p class="text-gray-400 text-sm">Interactive sessions</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">19:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Gala Dinner</h4>
+                                    <p class="text-gray-400 text-sm">Evening celebration</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card rounded-3xl p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-white">Day 3 — Sunday 31st</h3>
-                            <span class="mono text-purple-400">Closing Day</span>
+                    <!-- Day 3 -->
+                    <div class="card rounded-2xl p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full font-bold mono">DAY 3</div>
+                            <div>
+                                <h3 class="text-2xl font-bold">Sunday, May 31st</h3>
+                                <p class="text-gray-400">Closing & Exploration</p>
+                            </div>
                         </div>
-                        <div class="p-8 text-center text-gray-500 border-2 border-dashed border-white/10 rounded-xl">
-                            <p>Full program schedule coming soon...</p>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">10:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Brunch</h4>
+                                    <p class="text-gray-400 text-sm">Final gathering</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">11:30</span>
+                                <div>
+                                    <h4 class="font-semibold">Closing Circle</h4>
+                                    <p class="text-gray-400 text-sm">Reflections and next steps</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <span class="mono text-purple-400 w-20 flex-shrink-0">13:00</span>
+                                <div>
+                                    <h4 class="font-semibold">Optional: Oslo Exploration</h4>
+                                    <p class="text-gray-400 text-sm">Guided tours and activities</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -457,91 +545,49 @@
             <div id="locationLock" class="lock-overlay rounded-3xl">
                 <div class="text-center">
                     <div class="text-6xl mb-4">🔒</div>
-                    <p class="text-xl text-white mb-4">Location details available after login</p>
+                    <p class="text-xl text-white mb-4">Location details are private</p>
                     <button onclick="toggleAuth()" class="btn-primary text-white font-bold py-3 px-6 rounded-full">Login with Nostr</button>
                 </div>
             </div>
-            <div class="max-w-6xl mx-auto protected-content" id="locationContent">
-                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Location</h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                    <div class="card rounded-3xl overflow-hidden">
-                        <div class="h-64 bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center relative">
-                            <div class="text-center z-10">
-                                <h3 class="text-3xl font-bold text-white mb-2">Blå</h3>
-                                <p class="text-purple-200">Brenneriveien 9C, Oslo</p>
-                            </div>
-                        </div>
-                        <div class="p-8">
-                            <p class="text-gray-300 mb-4">
-                                Located in the heart of Grünerløkka, Blå is Oslo's premier venue for live music and events. 
-                                Housed in a former factory building by the Akerselva river.
-                            </p>
-                            <ul class="space-y-2 text-sm text-gray-400 mb-6">
-                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Capacity: 420 people</li>
-                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Established: 1998</li>
-                                <li class="flex items-center gap-2"><span class="text-purple-400">→</span> Historic industrial venue</li>
-                            </ul>
-                            <a href="https://www.blaaoslo.no/" target="_blank" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
-                                Visit Venue Website
-                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="card rounded-3xl p-8">
-                            <h3 class="text-xl font-bold mb-4 text-white">Getting There</h3>
-                            <div class="space-y-4">
-                                <div class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">✈</span></div>
-                                    <div>
-                                        <h4 class="font-semibold">Airport</h4>
-                                        <p class="text-sm text-gray-400">OSL Gardermoen is 45 minutes by train to Oslo Central Station</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">🚇</span></div>
-                                    <div>
-                                        <h4 class="font-semibold">Public Transport</h4>
-                                        <p class="text-sm text-gray-400">Tram 11, 12, 13 or Bus 30 to Olaf Ryes plass</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-4">
-                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0"><span class="text-purple-400">🏨</span></div>
-                                    <div>
-                                        <h4 class="font-semibold">Accommodation</h4>
-                                        <p class="text-sm text-gray-400">Grünerløkka area recommended. Try Anker Hotel or CityBox</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card rounded-3xl p-8">
-                            <h3 class="text-xl font-bold mb-4 text-white">About Oslo</h3>
-                            <p class="text-gray-400 text-sm leading-relaxed">
-                                Norway's capital combines modern architecture with historic charm. In late May, 
-                                enjoy the midnight sun with 18+ hours of daylight. The Grünerløkka district 
-                                is known for its street art, vintage shops, and vibrant café culture.
-                            </p>
-                        </div>
-                    </div>
+            <div class="max-w-4xl mx-auto protected-content" id="locationContent">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-4 gradient-text">Location</h2>
+                    <p class="text-gray-400 text-lg">Oslo, Norway</p>
                 </div>
 
-                <div class="card rounded-3xl p-2 h-96 relative overflow-hidden">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1999.0!2d10.7528!3d59.9203!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46416e61f267f039%3A0x7c5c5c5c5c5c5c5c!2sBl%C3%A5!5e0!3m2!1sen!2sno!4v1600000000000!5m2!1sen!2sno" 
-                        width="100%" 
-                        height="100%" 
-                        style="border:0; filter: grayscale(100%) invert(92%) contrast(83%);" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade"
-                        class="rounded-2xl opacity-80">
-                    </iframe>
-                    <div class="absolute bottom-4 left-4 bg-black/80 backdrop-blur px-4 py-2 rounded-lg border border-white/10">
-                        <p class="text-sm font-medium">Blå, Brenneriveien 9C</p>
-                        <p class="text-xs text-gray-400">0182 Oslo, Norway</p>
+                <div class="card rounded-2xl p-8 mb-8">
+                    <div class="aspect-video bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-xl flex items-center justify-center mb-6">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🏛️</div>
+                            <p class="text-gray-300">Historic Venue in Oslo</p>
+                            <p class="text-gray-500 text-sm mt-2">Exact address revealed after registration</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">The Venue</h3>
+                    <p class="text-gray-300 leading-relaxed mb-4">
+                        We've secured a beautiful historic venue in the heart of Oslo. The space offers the perfect atmosphere for deep conversations, collaborative workshops, and meaningful connections.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        Full address and travel instructions will be shared with registered attendees via Signal.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card rounded-2xl p-6">
+                        <h4 class="font-bold mb-3 flex items-center gap-2">
+                            <span>✈️</span> Getting to Oslo
+                        </h4>
+                        <p class="text-gray-400 text-sm">
+                            Oslo Airport (OSL) is well-connected with direct flights from major European cities. Airport express train gets you to the city center in 20 minutes.
+                        </p>
+                    </div>
+                    <div class="card rounded-2xl p-6">
+                        <h4 class="font-bold mb-3 flex items-center gap-2">
+                            <span>🏨</span> Accommodation
+                        </h4>
+                        <p class="text-gray-400 text-sm">
+                            We recommend hotels in the city center. A list of partner hotels with special rates will be shared with registered attendees.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -552,322 +598,269 @@
             <div id="exploreLock" class="lock-overlay rounded-3xl">
                 <div class="text-center">
                     <div class="text-6xl mb-4">🔒</div>
-                    <p class="text-xl text-white mb-4">Explore Oslo content available after login</p>
+                    <p class="text-xl text-white mb-4">Explore Oslo content is private</p>
                     <button onclick="toggleAuth()" class="btn-primary text-white font-bold py-3 px-6 rounded-full">Login with Nostr</button>
                 </div>
             </div>
             <div class="max-w-6xl mx-auto protected-content" id="exploreContent">
-                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Explore Oslo</h2>
-                
-                <div class="card rounded-3xl p-8 mb-8 text-center">
-                    <div class="text-6xl mb-6">🗺️</div>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Discover Hidden Gems</h3>
-                    <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
-                        Explore curated unique experiences, secret spots, and off-the-beaten-path adventures in Oslo through Atlas Obscura's guide to the city.
-                    </p>
-                    <a href="https://www.atlasobscura.com/things-to-do/oslo-norway" target="_blank" class="inline-flex items-center btn-primary text-white font-bold py-4 px-8 rounded-full text-lg">
-                        Open Atlas Obscura Guide
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </a>
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-4 gradient-text">Explore Oslo</h2>
+                    <p class="text-gray-400 text-lg">Discover the Norwegian capital</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="card rounded-2xl p-6 text-center">
-                        <div class="text-4xl mb-3">🎭</div>
-                        <h3 class="text-lg font-bold mb-2 text-white">Cultural Sites</h3>
-                        <p class="text-gray-400 text-sm">Museums, galleries, and historic landmarks</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-blue-900/50 to-purple-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🏔️</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Holmenkollen</h3>
+                            <p class="text-gray-400 text-sm">Iconic ski jump with panoramic views of Oslo and the fjord.</p>
+                        </div>
                     </div>
-                    <div class="card rounded-2xl p-6 text-center">
-                        <div class="text-4xl mb-3">🌲</div>
-                        <h3 class="text-lg font-bold mb-2 text-white">Nature & Outdoors</h3>
-                        <p class="text-gray-400 text-sm">Parks, fjords, and scenic viewpoints</p>
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-green-900/50 to-blue-900/50 flex items-center justify-center">
+                            <span class="text-4xl">⛵</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Oslofjord</h3>
+                            <p class="text-gray-400 text-sm">Beautiful waterfront with islands perfect for day trips.</p>
+                        </div>
                     </div>
-                    <div class="card rounded-2xl p-6 text-center">
-                        <div class="text-4xl mb-3">🍽️</div>
-                        <h3 class="text-lg font-bold mb-2 text-white">Food & Drink</h3>
-                        <p class="text-gray-400 text-sm">Local cuisine and unique dining experiences</p>
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🎨</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Museums</h3>
+                            <p class="text-gray-400 text-sm">Viking Ship Museum, Munch Museum, and Opera House.</p>
+                        </div>
                     </div>
-                    <div class="card rounded-2xl p-6 text-center">
-                        <div class="text-4xl mb-3">⚡</div>
-                        <h3 class="text-lg font-bold mb-2 text-white">Hidden Gems</h3>
-                        <p class="text-gray-400 text-sm">Off-the-beaten-path discoveries</p>
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-yellow-900/50 to-orange-900/50 flex items-center justify-center">
+                            <span class="text-4xl">☕</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Coffee Culture</h3>
+                            <p class="text-gray-400 text-sm">World-class coffee scene in Grünerløkka and city center.</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="mt-8 card rounded-2xl p-6">
-                    <p class="text-gray-400 text-sm text-center">
-                        <span class="ampersand-logo">＆</span>Other Stuff Tip: Check out the Atlas Obscura guide for the Viking Ship Museum, the Opera House roof walk, and secret street art spots in Grünerløkka!
-                    </p>
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-red-900/50 to-purple-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🌲</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Nordmarka Forest</h3>
+                            <p class="text-gray-400 text-sm">Accessible wilderness perfect for hiking and nature walks.</p>
+                        </div>
+                    </div>
+                    <div class="card rounded-2xl overflow-hidden">
+                        <div class="h-48 bg-gradient-to-br from-indigo-900/50 to-blue-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🍽️</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Food Scene</h3>
+                            <p class="text-gray-400 text-sm">From Michelin stars to street food markets.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Signal Chat Widget -->
-    <div id="signal-chat-widget" class="hidden">
-        <button onclick="toggleSignalChat()" class="signal-chat-button">
+    <!-- Signal Group Chat Widget -->
+    <div id="signal-chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <button onclick="toggleSignalChat()" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); display: flex; align-items: center; justify-content: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12c0 1.82.38 3.58 1.13 5.23.1.22.14.47.1.71l-.45 2.71 2.71-.45c.24-.04.49 0 .71.1C7.42 21.62 9.18 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.54 0-3.04-.31-4.45-.93l-.33-.15-1.66.28.28-1.66-.15-.33C4.31 15.04 4 13.54 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8zm4.54-6.46c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14 0-.31-.02-.48-.02-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.53.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.07-.11-.25-.17-.52-.29z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM13 11V7H11V11H7V13H11V17H13V13H17V11H13Z"/>
             </svg>
         </button>
-        <div id="signal-chat-window" class="signal-chat-window">
-            <div class="signal-chat-header">
-                <h3 class="font-bold">Signal Group Chat</h3>
-                <p class="text-sm opacity-90"><span class="ampersand-logo">＆</span>Other Stuff Convergence</p>
+        <div id="signalChatWindow" style="position: fixed; bottom: 90px; right: 20px; width: 350px; height: 400px; background: #1a1a1a; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 16px; color: white;">
+                <h3 style="font-weight: bold; margin: 0;">Signal Group Chat</h3>
+                <p style="font-size: 12px; margin: 4px 0 0 0; opacity: 0.9;">Join the conversation</p>
             </div>
-            <div class="signal-chat-body">
-                <p class="text-gray-400 text-sm mb-4">Join our Signal group chat for attendees:</p>
-                
-                <!-- Mobile: Try to open Signal group -->
-                <a href="https://signal.group/#CjQKID" class="btn-primary block text-center text-white font-bold py-3 px-4 rounded mb-3 md:hidden">
-                    Join Signal Group
-                </a>
-                <p class="text-gray-500 text-xs text-center mb-4 md:hidden">If this doesn't work, copy the link below</p>
-                
-                <!-- Desktop: Show group link -->
-                <div class="hidden md:block text-center">
-                    <p class="text-gray-300 mb-3">Scan QR code or use this link:</p>
-                    <div class="bg-white p-4 rounded-lg mb-3 inline-block">
-                        <!-- Placeholder QR code - replace with actual Signal group QR -->
-                        <div class="w-32 h-32 bg-gray-800 flex items-center justify-center text-xs text-gray-400">
-                            QR Code
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-500 mb-3">Group link will appear here after registration</p>
-                </div>
-                
-                <div class="bg-gray-800 rounded p-3 mb-4">
-                    <p class="text-xs text-gray-400 mb-1">Group Link:</p>
-                    <code class="text-purple-400 text-xs break-all">https://signal.group/#CjQKID...</code>
-                    <button onclick="copySignalLink()" class="mt-2 w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-2 rounded">
-                        Copy Link
-                    </button>
-                </div>
-                
-                <hr class="border-gray-700 my-4">
-                
-                <p class="text-gray-500 text-xs text-center">
-                    Don't have Signal? <a href="https://signal.org/download/" target="_blank" class="text-purple-400 hover:text-purple-300">Download here</a>
-                </p>
+            <div style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                <p style="color: #9ca3af; margin-bottom: 20px;">Connect with other attendees on Signal</p>
+                <a href="https://signal.group/#CjQKIPNfnDwCkcYdM_SyZ5hPgRBwQpSE8-KM12y1WkKUcr6OEhBxoivrUKuX3_TqrKzps1AD" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Join Signal Group</a>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 bg-black/50 backdrop-blur-md mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <span class="text-xl font-bold gradient-text">
-                        <span class="ampersand-logo">＆</span> OTHER STUFF - THE CONVERGENCE
-                    </span>
-                    <p class="text-sm text-gray-500 mt-1">Oslo, Norway • May 29-31, 2026</p>
-                </div>
-                <div class="flex space-x-6 text-sm text-gray-400">
-                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
-                    <a href="#" class="hover:text-white transition-colors">Code of Conduct</a>
-                    <a href="https://nostr.com" target="_blank" class="hover:text-white transition-colors">Nostr Protocol</a>
-                </div>
-            </div>
-            <div class="mt-8 pt-8 border-t border-white/5 text-center text-xs text-gray-600 mono">
-                Built for the <span class="ampersand-logo">＆</span>Other Stuff Collective • andotherstuff.org
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
     <script>
-        // Hardcoded approved npubs
-        const APPROVED_NPUBS = [
-            "npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424",
-            "npub1pmwz736ys3mfhjdld4r36xqwfc5qkz7dwxdkmfu3qqd7kucvludsrm4nu6",
-            "npub1zutx6ty0t5r0v8el8yqz0l9h3z0n7c8w0v9t3k2l5m8n4p6j9r2w5e0q1u",
-            "npub1trgwjazmhlszf8hkrlq5jmjtwdd847l0h6e2797rqypw4f6x7k8swuw47l"
+        // Approved npubs list - including the new one
+        const approvedNpubs = [
+            'npub1wmr34t36fy03m8hvgl96zl3znndyzyaqhwmwdtshwmtkg03fetaqhjg240',
+            // Add other approved npubs here
         ];
 
-        // GitHub Pages SPA Router
-        (function() {
-            const redirect = sessionStorage.redirect;
-            delete sessionStorage.redirect;
-            if (redirect && redirect != location.href) {
-                history.replaceState(null, null, redirect);
-            }
-        })();
+        // Track registered npubs to prevent duplicate registration
+        const registeredNpubs = new Set();
 
+        // Check if npub is approved
+        function isApprovedNpub(npub) {
+            return approvedNpubs.includes(npub);
+        }
+
+        // Check if npub is already registered
+        function isAlreadyRegistered(npub) {
+            return registeredNpubs.has(npub);
+        }
+
+        // Current user state
         let currentUser = null;
-        let isRegistered = false;
 
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check URL hash and show appropriate section
+            const hash = window.location.hash.slice(1);
+            if (hash && hash !== 'home') {
+                showSection(hash);
+            }
+
+            // Listen for hash changes
+            window.addEventListener('hashchange', function() {
+                const hash = window.location.hash.slice(1);
+                if (hash) {
+                    showSection(hash);
+                }
+            });
+
+            // Setup registration form
+            setupRegistrationForm();
+        });
+
+        // Show section
         function showSection(sectionId) {
-            const basePath = location.pathname.replace(/\/$/, '');
-            const newUrl = `${basePath}/#${sectionId}`;
-            history.pushState({section: sectionId}, '', newUrl);
-            
-            document.querySelectorAll('main > section').forEach(section => {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
                 section.classList.remove('active-section');
                 section.classList.add('hidden-section');
             });
-            
-            const target = document.getElementById(sectionId);
-            if (target) {
-                target.classList.remove('hidden-section');
-                target.classList.add('active-section');
-                window.scrollTo({top: 0, behavior: 'smooth'});
+
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden-section');
+                targetSection.classList.add('active-section');
+                window.location.hash = sectionId;
             }
-            
-            const mobileMenu = document.getElementById('mobileMenu');
-            if (mobileMenu) mobileMenu.classList.add('hidden');
+
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
         }
 
+        // Check auth before showing protected section
         function checkAuthAndShow(sectionId) {
             if (!currentUser) {
                 toggleAuth();
-                sessionStorage.intendedSection = sectionId;
-            } else {
-                showSection(sectionId);
-                unlockProtectedContent(sectionId);
+                return;
             }
+            showSection(sectionId);
         }
 
-        function checkAuthAndShowRegister() {
+        // Go to registration
+        function goToRegistration() {
             if (!currentUser) {
                 toggleAuth();
-                sessionStorage.intendedSection = 'registration';
-            } else {
-                showSection('registration');
-                unlockProtectedContent('registration');
+                return;
             }
+            showSection('registration');
         }
 
-        function unlockProtectedContent(sectionId) {
-            const locks = {
-                'registration': ['registrationLock', 'registrationContent'],
-                'program': ['programLock', 'programContent'],
-                'location': ['locationLock', 'locationContent'],
-                'explore': ['exploreLock', 'exploreContent']
-            };
-            
-            if (locks[sectionId]) {
-                const [lockId, contentId] = locks[sectionId];
-                const lock = document.getElementById(lockId);
-                const content = document.getElementById(contentId);
-                if (lock) lock.style.display = 'none';
-                if (content) content.classList.add('unlocked');
-            }
+        // Toggle auth modal
+        function toggleAuth() {
+            const modal = document.getElementById('authModal');
+            modal.classList.toggle('hidden');
+            document.getElementById('authError').classList.add('hidden');
+            document.getElementById('manualNpub').value = '';
         }
 
-        function unlockAllContent() {
-            ['registration', 'program', 'location', 'explore'].forEach(unlockProtectedContent);
-        }
-
-        function showExploreNav() {
-            const desktopNav = document.getElementById('exploreNavBtn');
-            const mobileNav = document.getElementById('exploreNavBtnMobile');
-            if (desktopNav) {
-                desktopNav.classList.remove('nav-hidden');
-                desktopNav.classList.add('nav-visible');
-            }
-            if (mobileNav) {
-                mobileNav.classList.remove('nav-hidden');
-                mobileNav.classList.add('nav-visible');
-            }
-        }
-
-        window.addEventListener('popstate', (e) => {
-            const hash = location.hash.slice(1) || 'home';
-            showSection(hash);
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const hash = location.hash.slice(1) || 'home';
-            showSection(hash);
-            checkExistingAuth();
-        });
-
+        // Toggle mobile menu
         function toggleMobileMenu() {
             document.getElementById('mobileMenu').classList.toggle('hidden');
         }
 
-        function toggleAuth() {
-            const modal = document.getElementById('authModal');
-            modal.classList.toggle('hidden');
-            document.getElementById('authOptions').classList.remove('hidden');
-            document.getElementById('authLoading').classList.add('hidden');
-            document.getElementById('authError').classList.add('hidden');
-        }
-
+        // Auth with Nostr extension
         async function authWithExtension() {
             document.getElementById('authOptions').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
 
             try {
                 if (!window.nostr) {
-                    throw new Error('No Nostr extension found. Please install Alby, nos2x, or similar.');
+                    throw new Error('Nostr extension not found. Please install a NIP-07 compatible extension.');
                 }
 
                 const pubkey = await window.nostr.getPublicKey();
-                const npub = 'npub' + pubkey;
-                
-                if (!APPROVED_NPUBS.includes(npub)) {
-                    throw new Error('This npub is not on the pre-approved list. Please contact the organizers.');
-                }
+                const npub = window.NostrTools.nip19.npubEncode(pubkey);
 
-                const authEvent = {
-                    kind: 27235,
-                    created_at: Math.floor(Date.now() / 1000),
-                    content: '',
-                    tags: [
-                        ['u', window.location.origin + '/api/auth'],
-                        ['method', 'POST']
-                    ],
-                    pubkey: pubkey
-                };
-
-                const signedEvent = await window.nostr.signEvent(authEvent);
-                
-                currentUser = { pubkey: pubkey, npub: npub };
-                updateUIForLoggedInUser();
-                toggleAuth();
-                
-                const intended = sessionStorage.intendedSection || 'home';
-                delete sessionStorage.intendedSection;
-                if (intended !== 'home') {
-                    showSection(intended);
-                    unlockProtectedContent(intended);
-                }
-                
-                showExploreNav();
-                
+                await verifyAndLogin(npub);
             } catch (error) {
                 showAuthError(error.message);
             }
         }
 
+        // Auth manually with npub
         async function authManual() {
             const npub = document.getElementById('manualNpub').value.trim();
-            if (!npub || !npub.startsWith('npub')) {
-                showAuthError('Please enter a valid npub');
+
+            if (!npub) {
+                showAuthError('Please enter an npub');
                 return;
             }
-            
-            if (!APPROVED_NPUBS.includes(npub)) {
-                showAuthError('This npub is not on the pre-approved list. Please contact the organizers.');
+
+            if (!npub.startsWith('npub1')) {
+                showAuthError('Invalid npub format');
                 return;
             }
-            
-            currentUser = { npub: npub, pubkey: npub };
-            updateUIForLoggedInUser();
-            toggleAuth();
-            
-            const intended = sessionStorage.intendedSection || 'home';
-            delete sessionStorage.intendedSection;
-            if (intended !== 'home') {
-                showSection(intended);
-                unlockProtectedContent(intended);
+
+            document.getElementById('authOptions').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+
+            try {
+                await verifyAndLogin(npub);
+            } catch (error) {
+                showAuthError(error.message);
             }
-            
-            showExploreNav();
         }
 
+        // Verify and login
+        async function verifyAndLogin(npub) {
+            // Simulate verification delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (!isApprovedNpub(npub)) {
+                throw new Error('This npub is not on the approved list. If you believe this is an error, please contact the organizers.');
+            }
+
+            // Success
+            currentUser = { npub };
+
+            // Update UI
+            document.getElementById('authBtn').textContent = '[ LOGOUT ]';
+            document.getElementById('authBtn').onclick = logout;
+
+            // Show protected nav items
+            document.getElementById('exploreNavBtn').classList.remove('nav-hidden');
+            document.getElementById('exploreNavBtn').classList.add('nav-visible');
+            document.getElementById('exploreNavBtnMobile').classList.remove('nav-hidden');
+            document.getElementById('exploreNavBtnMobile').classList.add('nav-visible');
+
+            // Unlock protected sections
+            unlockProtectedSections();
+
+            // Close modal
+            toggleAuth();
+
+            // Show success notification
+            showNotification('Successfully authenticated!', 'success');
+        }
+
+        // Show auth error
         function showAuthError(message) {
             document.getElementById('authLoading').classList.add('hidden');
             document.getElementById('authOptions').classList.remove('hidden');
@@ -876,107 +869,125 @@
             errorDiv.classList.remove('hidden');
         }
 
-        function updateUIForLoggedInUser() {
-            const btn = document.getElementById('authBtn');
-            btn.textContent = `[ ${currentUser.npub.slice(0, 8)}... ]`;
-            btn.onclick = logout;
-            btn.classList.remove('text-purple-400');
-            btn.classList.add('text-green-400');
-            
-            const formNpub = document.getElementById('formNpub');
-            if (formNpub) formNpub.value = currentUser.npub;
-            
-            const userDisplay = document.getElementById('userNpubDisplay');
-            if (userDisplay) userDisplay.textContent = `Authenticated: ${currentUser.npub}`;
-        }
-
+        // Logout
         function logout() {
             currentUser = null;
-            isRegistered = false;
-            localStorage.removeItem('aos_auth');
-            localStorage.removeItem('aos_registered');
-            location.reload();
+            document.getElementById('authBtn').textContent = '[ LOGIN ]';
+            document.getElementById('authBtn').onclick = toggleAuth;
+
+            // Hide protected nav items
+            document.getElementById('exploreNavBtn').classList.add('nav-hidden');
+            document.getElementById('exploreNavBtn').classList.remove('nav-visible');
+            document.getElementById('exploreNavBtnMobile').classList.add('nav-hidden');
+            document.getElementById('exploreNavBtnMobile').classList.remove('nav-visible');
+
+            // Lock protected sections
+            lockProtectedSections();
+
+            showNotification('Logged out', 'info');
         }
 
-        function checkExistingAuth() {
-            const saved = localStorage.getItem('aos_auth');
-            if (saved) {
-                try {
-                    currentUser = JSON.parse(saved);
-                    if (!APPROVED_NPUBS.includes(currentUser.npub)) {
-                        logout();
-                        return;
-                    }
-                    updateUIForLoggedInUser();
-                    unlockAllContent();
-                    showSignalChat();
-                    showExploreNav();
-                } catch(e) {
-                    localStorage.removeItem('aos_auth');
-                }
+        // Unlock protected sections
+        function unlockProtectedSections() {
+            document.querySelectorAll('.protected-content').forEach(el => {
+                el.classList.add('unlocked');
+            });
+            document.querySelectorAll('.lock-overlay').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Update registration form with user npub
+            if (currentUser) {
+                document.getElementById('formNpub').value = currentUser.npub;
+                document.getElementById('userNpubDisplay').textContent = currentUser.npub;
             }
         }
 
-        // Handle form submission with AJAX
-        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            try {
-                const response = await fetch('https://formspree.io/f/mlgwwkoe', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (response.ok) {
-                    document.getElementById('registrationSuccess').classList.remove('hidden');
-                    this.reset();
-                    
-                    isRegistered = true;
-                    localStorage.setItem('aos_registered', 'true');
-                    localStorage.setItem('aos_auth', JSON.stringify(currentUser));
-                    
-                    showSignalChat();
-                    unlockAllContent();
-                    showExploreNav();
-                    
-                    document.getElementById('registrationSuccess').scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    throw new Error('Form submission failed');
-                }
-            } catch (error) {
-                alert('There was an error submitting the form. Please try again.');
-            }
-        });
-
-        function showSignalChat() {
-            const widget = document.getElementById('signal-chat-widget');
-            if (widget) widget.classList.remove('hidden');
-        }
-
-        function toggleSignalChat() {
-            const chatWindow = document.getElementById('signal-chat-window');
-            chatWindow.classList.toggle('active');
-        }
-
-        function copySignalLink() {
-            navigator.clipboard.writeText('https://signal.group/#CjQKID...').then(() => {
-                alert('Signal group link copied to clipboard!');
+        // Lock protected sections
+        function lockProtectedSections() {
+            document.querySelectorAll('.protected-content').forEach(el => {
+                el.classList.remove('unlocked');
+            });
+            document.querySelectorAll('.lock-overlay').forEach(el => {
+                el.style.display = 'flex';
             });
         }
 
-        // Check if already registered on load
-        if (localStorage.getItem('aos_registered') === 'true') {
-            isRegistered = true;
-            showSignalChat();
-            showExploreNav();
+        // Setup registration form
+        function setupRegistrationForm() {
+            const form = document.getElementById('registrationForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const npub = document.getElementById('formNpub').value;
+
+                // Check if already registered
+                if (isAlreadyRegistered(npub)) {
+                    document.getElementById('alreadyRegistered').classList.remove('hidden');
+                    document.getElementById('registrationSuccess').classList.add('hidden');
+                    return;
+                }
+
+                // Mark as registered
+                registeredNpubs.add(npub);
+
+                // Show success
+                document.getElementById('registrationSuccess').classList.remove('hidden');
+                document.getElementById('alreadyRegistered').classList.add('hidden');
+
+                // Disable form
+                form.querySelectorAll('input, textarea, button[type="submit"]').forEach(el => {
+                    el.disabled = true;
+                });
+
+                showNotification('Registration completed successfully!', 'success');
+            });
+        }
+
+        // Toggle Signal chat widget
+        function toggleSignalChat() {
+            const chatWindow = document.getElementById('signalChatWindow');
+            if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
+                chatWindow.style.display = 'flex';
+            } else {
+                chatWindow.style.display = 'none';
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#374151'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
     </script>
+
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
 </body>
 </html>

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>And Other Stuff - The Convergence</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>＆</text></svg>">
+    
     <!-- GitHub Pages Base URL -->
     <script>
         const base = document.createElement('base');
@@ -16,9 +19,9 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/nostr-tools@2.3.1/lib/nostr.bundle.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Space Grotesk', sans-serif; }
+        * { font-family: 'Inter', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         body {
             background-color: #0a0a0a;
@@ -163,19 +166,11 @@
             padding: 20px;
             overflow-y: auto;
         }
-        .signal-chat-input {
-            padding: 16px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            gap: 8px;
-        }
-        .signal-chat-input input {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 8px 16px;
-            color: white;
+        .ampersand-logo {
+            font-weight: 900;
+            font-size: 1.2em;
+            display: inline-block;
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -187,7 +182,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 cursor-pointer" onclick="showSection('home')">
-                    <span class="text-2xl font-bold tracking-tighter gradient-text">AND OTHER STUFF - THE CONVERGENCE</span>
+                    <span class="text-2xl font-bold tracking-tighter gradient-text">
+                        <span class="ampersand-logo">＆</span> OTHER STUFF - THE CONVERGENCE
+                    </span>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
@@ -272,12 +269,23 @@
                 </div>
                 <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
                     <span class="block text-white mb-2">AND</span>
-                    <span class="block gradient-text">OTHER</span>
+                    <span class="block gradient-text"><span class="ampersand-logo">＆</span> OTHER</span>
                     <span class="block text-white">STUFF</span>
                     <span class="block text-3xl md:text-4xl mt-4 text-purple-300">THE CONVERGENCE</span>
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-400 mb-4 mono">29th — 31st May 2026</p>
-                <p class="text-lg text-gray-500 mb-12 max-w-2xl mx-auto">A gathering for the AOS Collective. Three days of talks, workshops, and connection.</p>
+                
+                <div class="max-w-3xl mx-auto mb-12 text-left space-y-4">
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        You are part of a curated list of humans we want to get to know better—and who we want to show what <span class="ampersand-logo">＆</span>OS is really up to.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        Our name is an homage to the "Other Stuff" in Nostr, because we believe that's where the magic lives. It's in the unexpected ideas, the permissionless tools, and the communities that emerge when technology is truly open.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        This isn't an ordinary gathering; it's an invitation to explore that broader landscape with us. Join a group of dreamers and builders who believe that open protocols can—and will—save the world by bringing these new possibilities to life.
+                    </p>
+                </div>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <button onclick="checkAuthAndShowRegister()" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg glow">Register Now →</button>
@@ -404,7 +412,7 @@
                                 <div class="mono text-purple-400 w-20 shrink-0">10:00</div>
                                 <div>
                                     <h4 class="font-semibold text-lg">Opening Keynote</h4>
-                                    <p class="text-gray-400 text-sm">State of the AOS Collective</p>
+                                    <p class="text-gray-400 text-sm">State of the <span class="ampersand-logo">＆</span>OS Collective</p>
                                 </div>
                             </div>
                             <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
@@ -547,48 +555,45 @@
             <div class="max-w-6xl mx-auto protected-content" id="exploreContent">
                 <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Explore Oslo</h2>
                 
-                <div class="card rounded-3xl p-8 mb-8">
-                    <p class="text-gray-300 mb-6 text-center">
-                        Discover hidden gems and unique experiences in Oslo curated by Atlas Obscura.
+                <div class="card rounded-3xl p-8 mb-8 text-center">
+                    <div class="text-6xl mb-6">🗺️</div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Discover Hidden Gems</h3>
+                    <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                        Explore curated unique experiences, secret spots, and off-the-beaten-path adventures in Oslo through Atlas Obscura's guide to the city.
                     </p>
-                    <div class="aspect-w-16 aspect-h-9 w-full h-96 rounded-xl overflow-hidden border border-white/10">
-                        <iframe 
-                            src="https://www.atlasobscura.com/things-to-do/oslo-norway" 
-                            width="100%" 
-                            height="100%" 
-                            style="border:0;" 
-                            allowfullscreen=""
-                            class="rounded-xl bg-gray-900"
-                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                            onload="this.style.opacity=1"
-                            style="opacity:0; transition:opacity 0.3s; border:0; filter: invert(1) hue-rotate(180deg);"
-                        ></iframe>
+                    <a href="https://www.atlasobscura.com/things-to-do/oslo-norway" target="_blank" class="inline-flex items-center btn-primary text-white font-bold py-4 px-8 rounded-full text-lg">
+                        Open Atlas Obscura Guide
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-3">🎭</div>
+                        <h3 class="text-lg font-bold mb-2 text-white">Cultural Sites</h3>
+                        <p class="text-gray-400 text-sm">Museums, galleries, and historic landmarks</p>
                     </div>
-                    <div class="mt-6 text-center">
-                        <a href="https://www.atlasobscura.com/things-to-do/oslo-norway" target="_blank" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
-                            Open Atlas Obscura in New Tab
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        </a>
+                    <div class="card rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-3">🌲</div>
+                        <h3 class="text-lg font-bold mb-2 text-white">Nature & Outdoors</h3>
+                        <p class="text-gray-400 text-sm">Parks, fjords, and scenic viewpoints</p>
+                    </div>
+                    <div class="card rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-3">🍽️</div>
+                        <h3 class="text-lg font-bold mb-2 text-white">Food & Drink</h3>
+                        <p class="text-gray-400 text-sm">Local cuisine and unique dining experiences</p>
+                    </div>
+                    <div class="card rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-3">⚡</div>
+                        <h3 class="text-lg font-bold mb-2 text-white">Hidden Gems</h3>
+                        <p class="text-gray-400 text-sm">Off-the-beaten-path discoveries</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="card rounded-2xl p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">🎭 Cultural Sites</h3>
-                        <p class="text-gray-400 text-sm">Museums, galleries, and historic landmarks</p>
-                    </div>
-                    <div class="card rounded-2xl p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">🌲 Nature & Outdoors</h3>
-                        <p class="text-gray-400 text-sm">Parks, fjords, and scenic viewpoints</p>
-                    </div>
-                    <div class="card rounded-2xl p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">🍽️ Food & Drink</h3>
-                        <p class="text-gray-400 text-sm">Local cuisine and unique dining experiences</p>
-                    </div>
-                    <div class="card rounded-2xl p-6">
-                        <h3 class="text-xl font-bold mb-3 text-white">⚡ Hidden Gems</h3>
-                        <p class="text-gray-400 text-sm">Off-the-beaten-path discoveries</p>
-                    </div>
+                <div class="mt-8 card rounded-2xl p-6">
+                    <p class="text-gray-400 text-sm text-center">
+                        <span class="ampersand-logo">＆</span>OS Tip: Check out the Atlas Obscura guide for the Viking Ship Museum, the Opera House roof walk, and secret street art spots in Grünerløkka!
+                    </p>
                 </div>
             </div>
         </section>
@@ -604,7 +609,7 @@
         <div id="signal-chat-window" class="signal-chat-window">
             <div class="signal-chat-header">
                 <h3 class="font-bold">Signal Chat</h3>
-                <p class="text-sm opacity-90">Message AOS Convergence</p>
+                <p class="text-sm opacity-90">Message <span class="ampersand-logo">＆</span>OS Convergence</p>
             </div>
             <div class="signal-chat-body">
                 <p class="text-gray-400 text-sm mb-4">Click below to start a conversation:</p>
@@ -638,7 +643,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
-                    <span class="text-xl font-bold gradient-text">AND OTHER STUFF - THE CONVERGENCE</span>
+                    <span class="text-xl font-bold gradient-text">
+                        <span class="ampersand-logo">＆</span> OTHER STUFF - THE CONVERGENCE
+                    </span>
                     <p class="text-sm text-gray-500 mt-1">Oslo, Norway • May 29-31, 2026</p>
                 </div>
                 <div class="flex space-x-6 text-sm text-gray-400">
@@ -648,14 +655,14 @@
                 </div>
             </div>
             <div class="mt-8 pt-8 border-t border-white/5 text-center text-xs text-gray-600 mono">
-                Built for the AOS Collective • andotherstuff.org
+                Built for the <span class="ampersand-logo">＆</span>OS Collective • andotherstuff.org
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script>
-        // Hardcoded approved npubs (since JSON fetch isn't working reliably)
+        // Hardcoded approved npubs
         const APPROVED_NPUBS = [
             "npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424",
             "npub1pmwz736ys3mfhjdld4r36xqwfc5qkz7dwxdkmfu3qqd7kucvludsrm4nu6",
@@ -771,7 +778,6 @@
                 const pubkey = await window.nostr.getPublicKey();
                 const npub = 'npub' + pubkey;
                 
-                // Check whitelist
                 if (!APPROVED_NPUBS.includes(npub)) {
                     throw new Error('This npub is not on the pre-approved list. Please contact the organizers.');
                 }
@@ -812,7 +818,6 @@
                 return;
             }
             
-            // Check whitelist
             if (!APPROVED_NPUBS.includes(npub)) {
                 showAuthError('This npub is not on the pre-approved list. Please contact the organizers.');
                 return;
@@ -865,7 +870,6 @@
             if (saved) {
                 try {
                     currentUser = JSON.parse(saved);
-                    // Verify still in whitelist
                     if (!APPROVED_NPUBS.includes(currentUser.npub)) {
                         logout();
                         return;

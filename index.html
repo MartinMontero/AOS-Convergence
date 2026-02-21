@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Other Stuff - The Convergence</title>
+    <title>And Other Stuff - The Convergence</title>
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>＆</text></svg>">
@@ -12,7 +12,7 @@
     <script>
         const base = document.createElement('base');
         const isGitHubPages = location.hostname.includes('github.io');
-        const repoName = 'A Other Stuff-Convergence';
+        const repoName = 'AOS-Convergence';
         base.href = isGitHubPages ? `/${repoName}/` : '/';
         document.head.appendChild(base);
     </script>
@@ -116,7 +116,6 @@
             background: rgba(0,0,0,0.7);
             z-index: 10;
         }
-        /* Signal Chat Widget Styles */
         #signal-chat-widget {
             position: fixed;
             bottom: 20px;
@@ -172,6 +171,12 @@
             display: inline-block;
             transform: scale(1.1);
         }
+        .nav-hidden {
+            display: none !important;
+        }
+        .nav-visible {
+            display: inline-flex !important;
+        }
     </style>
 </head>
 <body class="min-h-screen grid-bg">
@@ -191,7 +196,7 @@
                         <button onclick="showSection('home')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Home</button>
                         <button onclick="checkAuthAndShow('program')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Program</button>
                         <button onclick="checkAuthAndShow('location')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Location</button>
-                        <button onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Explore Oslo</button>
+                        <button id="exploreNavBtn" onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium nav-hidden">Explore Oslo</button>
                         <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono">[ LOGIN ]</button>
                     </div>
                 </div>
@@ -209,7 +214,7 @@
                 <button onclick="showSection('home')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Home</button>
                 <button onclick="checkAuthAndShow('program')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Program</button>
                 <button onclick="checkAuthAndShow('location')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Location</button>
-                <button onclick="checkAuthAndShow('explore')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Explore Oslo</button>
+                <button id="exploreNavBtnMobile" onclick="checkAuthAndShow('explore')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left nav-hidden">Explore Oslo</button>
                 <button onclick="toggleAuth()" class="text-purple-400 hover:text-purple-300 block px-3 py-2 text-base font-medium w-full text-left mono">[ LOGIN ]</button>
             </div>
         </div>
@@ -268,7 +273,6 @@
                     <span class="mono text-sm text-purple-400 tracking-widest border border-purple-500/30 rounded-full px-4 py-1">OSLO, NORWAY</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-                    <span class="block text-white mb-2">AND</span>
                     <span class="block gradient-text"><span class="ampersand-logo">＆</span> OTHER</span>
                     <span class="block text-white">STUFF</span>
                     <span class="block text-3xl md:text-4xl mt-4 text-purple-300">THE CONVERGENCE</span>
@@ -277,7 +281,7 @@
                 
                 <div class="max-w-3xl mx-auto mb-12 text-left space-y-4">
                     <p class="text-lg text-gray-300 leading-relaxed">
-                        You are part of a curated list of humans we want to get to know better—and who we want to show what <span class="ampersand-logo">＆</span>Other Stuff is really up to.
+                        You are part of a curated list of humans we want to get to know better—and who we want to share what <span class="ampersand-logo">＆</span>Other Stuff is really up to.
                     </p>
                     <p class="text-gray-400 leading-relaxed">
                         Our name is an homage to the "Other Stuff" in Nostr, because we believe that's where the magic lives. It's in the unexpected ideas, the permissionless tools, and the communities that emerge when technology is truly open.
@@ -375,7 +379,7 @@
 
                         <div id="registrationSuccess" class="hidden bg-green-900/50 border border-green-500/50 rounded-lg p-4 text-center">
                             <p class="text-green-200 font-semibold">Registration successful!</p>
-                            <p class="text-green-300/70 text-sm mt-1">Check your email for confirmation. Signal chat is now available.</p>
+                            <p class="text-green-300/70 text-sm mt-1">You now have full access to all content and Signal chat.</p>
                         </div>
                     </form>
                 </div>
@@ -412,7 +416,7 @@
                                 <div class="mono text-purple-400 w-20 shrink-0">10:00</div>
                                 <div>
                                     <h4 class="font-semibold text-lg">Opening Keynote</h4>
-                                    <p class="text-gray-400 text-sm">State of the <span class="ampersand-logo">＆</span>OS Collective</p>
+                                    <p class="text-gray-400 text-sm">State of the <span class="ampersand-logo">＆</span>Other Stuff Collective</p>
                                 </div>
                             </div>
                             <div class="flex gap-4 items-start p-4 rounded-xl bg-white/5">
@@ -608,32 +612,43 @@
         </button>
         <div id="signal-chat-window" class="signal-chat-window">
             <div class="signal-chat-header">
-                <h3 class="font-bold">Signal Chat</h3>
-                <p class="text-sm opacity-90">Message <span class="ampersand-logo">＆</span>OS Convergence</p>
+                <h3 class="font-bold">Signal Group Chat</h3>
+                <p class="text-sm opacity-90"><span class="ampersand-logo">＆</span>Other Stuff Convergence</p>
             </div>
             <div class="signal-chat-body">
-                <p class="text-gray-400 text-sm mb-4">Click below to start a conversation:</p>
+                <p class="text-gray-400 text-sm mb-4">Join our Signal group chat for attendees:</p>
                 
-                <!-- Mobile: Direct Signal link -->
-                <a href="sgnl://signal.me/+64274207560" class="btn-primary block text-center text-white font-bold py-3 px-4 rounded mb-3 md:hidden">
-                    Open Signal App
+                <!-- Mobile: Try to open Signal group -->
+                <a href="https://signal.group/#CjQKID" class="btn-primary block text-center text-white font-bold py-3 px-4 rounded mb-3 md:hidden">
+                    Join Signal Group
                 </a>
+                <p class="text-gray-500 text-xs text-center mb-4 md:hidden">If this doesn't work, copy the link below</p>
                 
-                <!-- Desktop: QR code or manual add -->
+                <!-- Desktop: Show group link -->
                 <div class="hidden md:block text-center">
-                    <p class="text-gray-300 mb-3">Add this number to Signal:</p>
-                    <p class="text-2xl font-bold text-purple-400 mono mb-4">+64274207560</p>
-                    <button onclick="copySignalNumber()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded border border-white/20 mb-3">
-                        Copy Number
+                    <p class="text-gray-300 mb-3">Scan QR code or use this link:</p>
+                    <div class="bg-white p-4 rounded-lg mb-3 inline-block">
+                        <!-- Placeholder QR code - replace with actual Signal group QR -->
+                        <div class="w-32 h-32 bg-gray-800 flex items-center justify-center text-xs text-gray-400">
+                            QR Code
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">Group link will appear here after registration</p>
+                </div>
+                
+                <div class="bg-gray-800 rounded p-3 mb-4">
+                    <p class="text-xs text-gray-400 mb-1">Group Link:</p>
+                    <code class="text-purple-400 text-xs break-all">https://signal.group/#CjQKID...</code>
+                    <button onclick="copySignalLink()" class="mt-2 w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-1 px-2 rounded">
+                        Copy Link
                     </button>
-                    <p class="text-gray-500 text-xs mt-2">Or scan QR code in Signal</p>
                 </div>
                 
                 <hr class="border-gray-700 my-4">
                 
-                <a href="https://signal.org/download/" target="_blank" class="text-purple-400 hover:text-purple-300 text-sm block text-center">
-                    Don't have Signal? Download here
-                </a>
+                <p class="text-gray-500 text-xs text-center">
+                    Don't have Signal? <a href="https://signal.org/download/" target="_blank" class="text-purple-400 hover:text-purple-300">Download here</a>
+                </p>
             </div>
         </div>
     </div>
@@ -655,7 +670,7 @@
                 </div>
             </div>
             <div class="mt-8 pt-8 border-t border-white/5 text-center text-xs text-gray-600 mono">
-                Built for the <span class="ampersand-logo">＆</span>OS Collective • andotherstuff.org
+                Built for the <span class="ampersand-logo">＆</span>Other Stuff Collective • andotherstuff.org
             </div>
         </div>
     </footer>
@@ -666,7 +681,8 @@
         const APPROVED_NPUBS = [
             "npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424",
             "npub1pmwz736ys3mfhjdld4r36xqwfc5qkz7dwxdkmfu3qqd7kucvludsrm4nu6",
-            "npub1zutx6ty0t5r0v8el8yqz0l9h3z0n7c8w0v9t3k2l5m8n4p6j9r2w5e0q1u"
+            "npub1zutx6ty0t5r0v8el8yqz0l9h3z0n7c8w0v9t3k2l5m8n4p6j9r2w5e0q1u",
+            "npub1trgwjazmhlszf8hkrlq5jmjtwdd847l0h6e2797rqypw4f6x7k8swuw47l"
         ];
 
         // GitHub Pages SPA Router
@@ -743,6 +759,19 @@
             ['registration', 'program', 'location', 'explore'].forEach(unlockProtectedContent);
         }
 
+        function showExploreNav() {
+            const desktopNav = document.getElementById('exploreNavBtn');
+            const mobileNav = document.getElementById('exploreNavBtnMobile');
+            if (desktopNav) {
+                desktopNav.classList.remove('nav-hidden');
+                desktopNav.classList.add('nav-visible');
+            }
+            if (mobileNav) {
+                mobileNav.classList.remove('nav-hidden');
+                mobileNav.classList.add('nav-visible');
+            }
+        }
+
         window.addEventListener('popstate', (e) => {
             const hash = location.hash.slice(1) || 'home';
             showSection(hash);
@@ -806,6 +835,8 @@
                     unlockProtectedContent(intended);
                 }
                 
+                showExploreNav();
+                
             } catch (error) {
                 showAuthError(error.message);
             }
@@ -833,6 +864,8 @@
                 showSection(intended);
                 unlockProtectedContent(intended);
             }
+            
+            showExploreNav();
         }
 
         function showAuthError(message) {
@@ -877,6 +910,7 @@
                     updateUIForLoggedInUser();
                     unlockAllContent();
                     showSignalChat();
+                    showExploreNav();
                 } catch(e) {
                     localStorage.removeItem('aos_auth');
                 }
@@ -910,6 +944,7 @@
                     
                     showSignalChat();
                     unlockAllContent();
+                    showExploreNav();
                     
                     document.getElementById('registrationSuccess').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -930,9 +965,9 @@
             chatWindow.classList.toggle('active');
         }
 
-        function copySignalNumber() {
-            navigator.clipboard.writeText('+64274207560').then(() => {
-                alert('Signal number copied to clipboard!');
+        function copySignalLink() {
+            navigator.clipboard.writeText('https://signal.group/#CjQKID...').then(() => {
+                alert('Signal group link copied to clipboard!');
             });
         }
 
@@ -940,6 +975,7 @@
         if (localStorage.getItem('aos_registered') === 'true') {
             isRegistered = true;
             showSignalChat();
+            showExploreNav();
         }
     </script>
 </body>

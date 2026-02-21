@@ -194,6 +194,7 @@
                         <button onclick="showSection('home')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Home</button>
                         <button onclick="checkAuthAndShow('program')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Program</button>
                         <button onclick="checkAuthAndShow('location')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Location</button>
+                        <button onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Explore Oslo</button>
                         <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono">[ LOGIN ]</button>
                     </div>
                 </div>
@@ -211,6 +212,7 @@
                 <button onclick="showSection('home')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Home</button>
                 <button onclick="checkAuthAndShow('program')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Program</button>
                 <button onclick="checkAuthAndShow('location')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Location</button>
+                <button onclick="checkAuthAndShow('explore')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Explore Oslo</button>
                 <button onclick="toggleAuth()" class="text-purple-400 hover:text-purple-300 block px-3 py-2 text-base font-medium w-full text-left mono">[ LOGIN ]</button>
             </div>
         </div>
@@ -357,7 +359,6 @@
                             <textarea name="accessibility" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Any accessibility requirements we should know about..."></textarea>
                         </div>
 
-                        <!-- Hidden field for npub -->
                         <input type="hidden" name="npub" id="formNpub">
 
                         <div class="pt-4">
@@ -533,6 +534,64 @@
                 </div>
             </div>
         </section>
+
+        <!-- Explore Oslo Section (Protected) -->
+        <section id="explore" class="hidden-section min-h-screen py-20 px-4 relative">
+            <div id="exploreLock" class="lock-overlay rounded-3xl">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">🔒</div>
+                    <p class="text-xl text-white mb-4">Explore Oslo content available after login</p>
+                    <button onclick="toggleAuth()" class="btn-primary text-white font-bold py-3 px-6 rounded-full">Login with Nostr</button>
+                </div>
+            </div>
+            <div class="max-w-6xl mx-auto protected-content" id="exploreContent">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text">Explore Oslo</h2>
+                
+                <div class="card rounded-3xl p-8 mb-8">
+                    <p class="text-gray-300 mb-6 text-center">
+                        Discover hidden gems and unique experiences in Oslo curated by Atlas Obscura.
+                    </p>
+                    <div class="aspect-w-16 aspect-h-9 w-full h-96 rounded-xl overflow-hidden border border-white/10">
+                        <iframe 
+                            src="https://www.atlasobscura.com/things-to-do/oslo-norway" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen=""
+                            class="rounded-xl bg-gray-900"
+                            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                            onload="this.style.opacity=1"
+                            style="opacity:0; transition:opacity 0.3s; border:0; filter: invert(1) hue-rotate(180deg);"
+                        ></iframe>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <a href="https://www.atlasobscura.com/things-to-do/oslo-norway" target="_blank" class="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
+                            Open Atlas Obscura in New Tab
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">🎭 Cultural Sites</h3>
+                        <p class="text-gray-400 text-sm">Museums, galleries, and historic landmarks</p>
+                    </div>
+                    <div class="card rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">🌲 Nature & Outdoors</h3>
+                        <p class="text-gray-400 text-sm">Parks, fjords, and scenic viewpoints</p>
+                    </div>
+                    <div class="card rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">🍽️ Food & Drink</h3>
+                        <p class="text-gray-400 text-sm">Local cuisine and unique dining experiences</p>
+                    </div>
+                    <div class="card rounded-2xl p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">⚡ Hidden Gems</h3>
+                        <p class="text-gray-400 text-sm">Off-the-beaten-path discoveries</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Signal Chat Widget -->
@@ -545,14 +604,31 @@
         <div id="signal-chat-window" class="signal-chat-window">
             <div class="signal-chat-header">
                 <h3 class="font-bold">Signal Chat</h3>
-                <p class="text-sm opacity-90">Message us on Signal</p>
+                <p class="text-sm opacity-90">Message AOS Convergence</p>
             </div>
             <div class="signal-chat-body">
-                <p class="text-gray-400 text-sm mb-4">Click below to open Signal and message us:</p>
-                <a href="https://signal.me/+64274207560" target="_blank" class="btn-primary block text-center text-white font-bold py-3 px-4 rounded">
-                    Open Signal
+                <p class="text-gray-400 text-sm mb-4">Click below to start a conversation:</p>
+                
+                <!-- Mobile: Direct Signal link -->
+                <a href="sgnl://signal.me/+64274207560" class="btn-primary block text-center text-white font-bold py-3 px-4 rounded mb-3 md:hidden">
+                    Open Signal App
                 </a>
-                <p class="text-gray-500 text-xs mt-4">Or add: +64274207560</p>
+                
+                <!-- Desktop: QR code or manual add -->
+                <div class="hidden md:block text-center">
+                    <p class="text-gray-300 mb-3">Add this number to Signal:</p>
+                    <p class="text-2xl font-bold text-purple-400 mono mb-4">+64274207560</p>
+                    <button onclick="copySignalNumber()" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded border border-white/20 mb-3">
+                        Copy Number
+                    </button>
+                    <p class="text-gray-500 text-xs mt-2">Or scan QR code in Signal</p>
+                </div>
+                
+                <hr class="border-gray-700 my-4">
+                
+                <a href="https://signal.org/download/" target="_blank" class="text-purple-400 hover:text-purple-300 text-sm block text-center">
+                    Don't have Signal? Download here
+                </a>
             </div>
         </div>
     </div>
@@ -579,6 +655,13 @@
 
     <!-- Scripts -->
     <script>
+        // Hardcoded approved npubs (since JSON fetch isn't working reliably)
+        const APPROVED_NPUBS = [
+            "npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424",
+            "npub1pmwz736ys3mfhjdld4r36xqwfc5qkz7dwxdkmfu3qqd7kucvludsrm4nu6",
+            "npub1zutx6ty0t5r0v8el8yqz0l9h3z0n7c8w0v9t3k2l5m8n4p6j9r2w5e0q1u"
+        ];
+
         // GitHub Pages SPA Router
         (function() {
             const redirect = sessionStorage.redirect;
@@ -589,24 +672,7 @@
         })();
 
         let currentUser = null;
-        let approvedNpubs = [];
         let isRegistered = false;
-
-        // Load approved npubs from JSON
-        async function loadApprovedNpubs() {
-            try {
-                const response = await fetch('approved-npubs.json');
-                if (response.ok) {
-                    const data = await response.json();
-                    approvedNpubs = data.npubs || [];
-                }
-            } catch (e) {
-                console.log('Could not load approved npubs, using empty list');
-                approvedNpubs = [];
-            }
-        }
-
-        loadApprovedNpubs();
 
         function showSection(sectionId) {
             const basePath = location.pathname.replace(/\/$/, '');
@@ -653,7 +719,8 @@
             const locks = {
                 'registration': ['registrationLock', 'registrationContent'],
                 'program': ['programLock', 'programContent'],
-                'location': ['locationLock', 'locationContent']
+                'location': ['locationLock', 'locationContent'],
+                'explore': ['exploreLock', 'exploreContent']
             };
             
             if (locks[sectionId]) {
@@ -666,7 +733,7 @@
         }
 
         function unlockAllContent() {
-            ['registration', 'program', 'location'].forEach(unlockProtectedContent);
+            ['registration', 'program', 'location', 'explore'].forEach(unlockProtectedContent);
         }
 
         window.addEventListener('popstate', (e) => {
@@ -704,7 +771,8 @@
                 const pubkey = await window.nostr.getPublicKey();
                 const npub = 'npub' + pubkey;
                 
-                if (approvedNpubs.length > 0 && !approvedNpubs.includes(npub)) {
+                // Check whitelist
+                if (!APPROVED_NPUBS.includes(npub)) {
                     throw new Error('This npub is not on the pre-approved list. Please contact the organizers.');
                 }
 
@@ -744,7 +812,8 @@
                 return;
             }
             
-            if (approvedNpubs.length > 0 && !approvedNpubs.includes(npub)) {
+            // Check whitelist
+            if (!APPROVED_NPUBS.includes(npub)) {
                 showAuthError('This npub is not on the pre-approved list. Please contact the organizers.');
                 return;
             }
@@ -787,6 +856,7 @@
             currentUser = null;
             isRegistered = false;
             localStorage.removeItem('aos_auth');
+            localStorage.removeItem('aos_registered');
             location.reload();
         }
 
@@ -795,6 +865,11 @@
             if (saved) {
                 try {
                     currentUser = JSON.parse(saved);
+                    // Verify still in whitelist
+                    if (!APPROVED_NPUBS.includes(currentUser.npub)) {
+                        logout();
+                        return;
+                    }
                     updateUIForLoggedInUser();
                     unlockAllContent();
                     showSignalChat();
@@ -822,22 +897,16 @@
                 });
                 
                 if (response.ok) {
-                    // Show success
                     document.getElementById('registrationSuccess').classList.remove('hidden');
                     this.reset();
                     
-                    // Mark as registered
                     isRegistered = true;
                     localStorage.setItem('aos_registered', 'true');
                     localStorage.setItem('aos_auth', JSON.stringify(currentUser));
                     
-                    // Show Signal chat
                     showSignalChat();
-                    
-                    // Unlock everything
                     unlockAllContent();
                     
-                    // Scroll to success message
                     document.getElementById('registrationSuccess').scrollIntoView({ behavior: 'smooth' });
                 } else {
                     throw new Error('Form submission failed');
@@ -853,8 +922,14 @@
         }
 
         function toggleSignalChat() {
-            const window = document.getElementById('signal-chat-window');
-            window.classList.toggle('active');
+            const chatWindow = document.getElementById('signal-chat-window');
+            chatWindow.classList.toggle('active');
+        }
+
+        function copySignalNumber() {
+            navigator.clipboard.writeText('+64274207560').then(() => {
+                alert('Signal number copied to clipboard!');
+            });
         }
 
         // Check if already registered on load

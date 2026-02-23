@@ -26,6 +26,13 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/nostr-tools@2.3.1/lib/nostr.bundle.js"></script>
+    <script>
+        // nostr-tools bundle declares `var NostrTools` in strict mode,
+        // which stays local to the script scope. Expose it globally.
+        if (typeof NostrTools !== 'undefined') {
+            window.NostrTools = NostrTools;
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', sans-serif; }
@@ -689,10 +696,12 @@
     </div>
 
     <script>
-        // Approved npubs list - including the new one
+        // Approved npubs list
         const approvedNpubs = [
             'npub1wmr34t36fy03m8hvgl96zl3znndyzyaqhwmwdtshwmtkg03fetaqhjg240',
-            // Add other approved npubs here
+            'npub18ams6ewn5aj2n3wt2qawzglx9mr4nzksxhvrdc4gzrecw7n5tvjqctp424',
+            'npub1pmwz736ys3mfhjdld4r36xqwfc5qkz7dwxdkmfu3qqd7kucvludsrm4nu6',
+            'npub1zutx6ty0t5r0v8el8yqz0l9h3z0n7c8w0v9t3k2l5m8n4p6j9r2w5e0q1u',
         ];
 
         // Track registered npubs to prevent duplicate registration
@@ -814,7 +823,19 @@
             }
 
             if (!npub.startsWith('npub1')) {
-                showAuthError('Invalid npub format');
+                showAuthError('Invalid npub format. It should start with npub1.');
+                return;
+            }
+
+            // Validate bech32 encoding
+            try {
+                const decoded = window.NostrTools.nip19.decode(npub);
+                if (decoded.type !== 'npub') {
+                    showAuthError('Invalid npub format.');
+                    return;
+                }
+            } catch (e) {
+                showAuthError('Invalid npub format. Please check and try again.');
                 return;
             }
 

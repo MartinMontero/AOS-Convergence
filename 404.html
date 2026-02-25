@@ -5,7 +5,7 @@
     <title>And Other Stuff - Redirecting...</title>
     <script>
         // Store the current URL and redirect to root
-        sessionStorage.redirect = location.href;
+        sessionStorage.setItem('redirect', location.href);
     </script>
     <meta http-equiv="refresh" content="0;URL='/'">
 </head>

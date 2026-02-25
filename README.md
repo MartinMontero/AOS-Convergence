@@ -3,7 +3,7 @@
 And Other Stuff - Nostr community gathering in Oslo, Norway.
 
 **Date:** May 29-31, 2026  
-**Location:** Blå, Brenneriveien 9C, Oslo
+**Location:** Oslo
 
 ## Features
 - Nostr NIP-98 authentication

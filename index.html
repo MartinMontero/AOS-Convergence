@@ -4,49 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>And Other Stuff - The Convergence</title>
-
-    <!-- Favicon -->
+    
+    <!-- Favicon - Using the logo -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>＆</text></svg>">
-
-    <!-- Open Graph / Social Sharing -->
-    <meta property="og:title" content="And Other Stuff — The Convergence">
-    <meta property="og:description" content="A curated Nostr community gathering in Oslo, Norway. May 29–31, 2026.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://aosconvergence.org">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="And Other Stuff — The Convergence">
-    <meta name="twitter:description" content="A curated Nostr community gathering in Oslo, Norway. May 29–31, 2026.">
-    <meta name="description" content="And Other Stuff — The Convergence. A curated Nostr community gathering in Oslo, Norway. May 29–31, 2026.">
-
-    <!-- GitHub Pages base URL + default link target (single <base> tag) -->
+    
+    <!-- Force redirect to #home on first load -->
     <script>
-        (function() {
-            const base = document.createElement('base');
-            const isGitHubPages = location.hostname.includes('github.io');
-            const repoName = 'AOS-Convergence';
-            base.href = isGitHubPages ? '/' + repoName + '/' : '/';
-            base.target = '_blank';
-            document.head.appendChild(base);
-
-            // Force hash on first load
-            if (!window.location.hash) {
-                window.location.replace(window.location.pathname + '#home');
-            }
-        })();
+        // Only redirect if no hash AND we're on the correct domain
+        if (!window.location.hash && !window.location.pathname.includes('github.io')) {
+            window.location.replace(window.location.pathname + '#home');
+        }
     </script>
-
+    
+    <!-- REMOVED: GitHub Pages Base URL - this was causing the redirect issue -->
+    <!-- The base tag was forcing all relative URLs to resolve to github.io -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/nostr-tools@2.3.1/lib/nostr.bundle.js"></script>
-    <script>
-        // nostr-tools: expose globally with robust fallback
-        (function() {
-            if (typeof NostrTools !== 'undefined') {
-                window.NostrTools = NostrTools;
-            } else if (typeof window.NostrTools === 'undefined') {
-                console.warn('nostr-tools bundle did not expose NostrTools globally.');
-            }
-        })();
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', sans-serif; }
@@ -85,12 +59,6 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
         .nav-link { position: relative; }
         .nav-link::after {
@@ -140,7 +108,6 @@
             filter: none;
             opacity: 1;
             pointer-events: all;
-            user-select: auto;
         }
         .lock-overlay {
             position: absolute;
@@ -151,67 +118,61 @@
             background: rgba(0,0,0,0.7);
             z-index: 10;
         }
-        .nav-hidden { display: none !important; }
-        .nav-visible { display: inline-flex !important; }
-        .logo-img { height: 40px; width: auto; object-fit: contain; }
-        .logo-container { display: flex; align-items: center; gap: 8px; }
+        .nav-hidden {
+            display: none !important;
+        }
+        .nav-visible {
+            display: inline-flex !important;
+        }
+        /* Logo styles */
+        .logo-img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Hero logo styling */
         .hero-logo-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 2rem;
         }
-        .hero-logo { width: 100%; max-width: 400px; height: auto; }
-
-        /* Notification animations */
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-
-        /* Loading spinner for npub fetch */
-        .loading-bar {
+        .hero-logo {
             width: 100%;
-            height: 2px;
-            background: rgba(102, 126, 234, 0.2);
-            position: fixed;
-            top: 64px;
-            left: 0;
-            z-index: 51;
-            overflow: hidden;
+            max-width: 400px;
+            height: auto;
         }
-        .loading-bar::after {
-            content: '';
-            display: block;
-            width: 30%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            animation: loadingSlide 1s ease-in-out infinite;
+        .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #a78bfa;
+            letter-spacing: 0.2em;
+            margin-top: 0.5rem;
         }
-        @keyframes loadingSlide {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(400%); }
-        }
-        .loading-bar.hidden { display: none; }
     </style>
 </head>
 <body class="min-h-screen grid-bg">
     <div class="noise"></div>
-    <div id="loadingBar" class="loading-bar hidden"></div>
-
+    
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10" role="navigation" aria-label="Main navigation">
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex-shrink-0 cursor-pointer logo-container" onclick="showSection('home')" role="button" aria-label="Go to home" tabindex="0">
-                    <svg class="logo-img" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <text x="10" y="45" font-family="Georgia, serif" font-size="48" font-weight="bold" fill="url(#gradient)">&amp;</text>
+                <div class="flex-shrink-0 cursor-pointer logo-container" onclick="showSection('home')">
+                    <!-- SVG Logo -->
+                    <svg class="logo-img" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ampersand symbol -->
+                        <text x="10" y="45" font-family="Georgia, serif" font-size="48" font-weight="bold" fill="url(#gradient)">&</text>
+                        <!-- OTHER STUFF text -->
                         <text x="55" y="28" font-family="Inter, sans-serif" font-size="20" font-weight="800" fill="white">OTHER</text>
                         <text x="55" y="50" font-family="Inter, sans-serif" font-size="20" font-weight="800" fill="white">STUFF</text>
+                        <!-- THE CONVERGENCE text -->
                         <text x="140" y="28" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#a78bfa">THE</text>
                         <text x="140" y="50" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#a78bfa">CONVERGENCE</text>
                         <defs>
@@ -228,50 +189,49 @@
                         <button onclick="checkAuthAndShow('program')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Program</button>
                         <button onclick="checkAuthAndShow('location')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium">Location</button>
                         <button id="exploreNavBtn" onclick="checkAuthAndShow('explore')" class="nav-link text-gray-300 hover:text-white px-3 py-2 text-sm font-medium nav-hidden">Explore Oslo</button>
-                        <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono" aria-label="Login with Nostr">[ LOGIN ]</button>
+                        <button id="authBtn" onclick="toggleAuth()" class="nav-link text-purple-400 hover:text-purple-300 px-3 py-2 text-sm font-medium mono">[ LOGIN ]</button>
                     </div>
                 </div>
                 <div class="md:hidden">
-                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
                 </div>
             </div>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-black/95 border-b border-white/10" role="menu">
+        <div id="mobileMenu" class="hidden md:hidden bg-black/95 border-b border-white/10">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <button onclick="showSection('home')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left" role="menuitem">Home</button>
-                <button onclick="checkAuthAndShow('program')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left" role="menuitem">Program</button>
-                <button onclick="checkAuthAndShow('location')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left" role="menuitem">Location</button>
-                <button id="exploreNavBtnMobile" onclick="checkAuthAndShow('explore')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left nav-hidden" role="menuitem">Explore Oslo</button>
-                <button onclick="toggleAuth()" class="text-purple-400 hover:text-purple-300 block px-3 py-2 text-base font-medium w-full text-left mono" role="menuitem">[ LOGIN ]</button>
+                <button onclick="showSection('home')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Home</button>
+                <button onclick="checkAuthAndShow('program')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Program</button>
+                <button onclick="checkAuthAndShow('location')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left">Location</button>
+                <button id="exploreNavBtnMobile" onclick="checkAuthAndShow('explore')" class="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium w-full text-left nav-hidden">Explore Oslo</button>
+                <button onclick="toggleAuth()" class="text-purple-400 hover:text-purple-300 block px-3 py-2 text-base font-medium w-full text-left mono">[ LOGIN ]</button>
             </div>
         </div>
     </nav>
 
     <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div id="authModal" class="fixed inset-0 z-[60] hidden overflow-y-auto">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-black/90 transition-opacity" onclick="toggleAuth()"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
             <div class="inline-block align-bottom bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-white/10">
                 <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 id="authModalTitle" class="text-lg leading-6 font-medium text-white mb-4">Authenticate with Nostr</h3>
+                    <h3 class="text-lg leading-6 font-medium text-white mb-4">Authenticate with Nostr</h3>
                     <div class="mt-2 space-y-4">
                         <p class="text-sm text-gray-400">Sign in using your Nostr extension (NIP-07) or provide your npub.</p>
                         <div id="authOptions">
                             <button onclick="authWithExtension()" class="w-full btn-primary text-white font-bold py-3 px-4 rounded mb-3 flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                                 Sign with Extension (NIP-07)
                             </button>
                             <div class="relative my-4">
                                 <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-700"></div></div>
                                 <div class="relative flex justify-center text-sm"><span class="px-2 bg-gray-900 text-gray-500">Or</span></div>
                             </div>
-                            <label for="manualNpub" class="sr-only">Enter your npub</label>
-                            <input type="text" id="manualNpub" placeholder="Enter npub..." class="w-full input-field rounded px-4 py-3 text-white mb-3 mono text-sm" autocomplete="off" spellcheck="false">
+                            <input type="text" id="manualNpub" placeholder="Enter npub..." class="w-full input-field rounded px-4 py-3 text-white mb-3 mono text-sm">
                             <button onclick="authManual()" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded border border-white/20">
                                 Continue with npub
                             </button>
@@ -280,7 +240,7 @@
                             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-2"></div>
                             <p class="text-sm text-gray-400">Verifying...</p>
                         </div>
-                        <div id="authError" class="hidden bg-red-900/50 border border-red-500/50 rounded p-3 text-sm text-red-200" role="alert"></div>
+                        <div id="authError" class="hidden bg-red-900/50 border border-red-500/50 rounded p-3 text-sm text-red-200"></div>
                     </div>
                 </div>
                 <div class="bg-gray-900/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-white/10">
@@ -304,12 +264,17 @@
                 <div class="mb-8">
                     <span class="mono text-sm text-purple-400 tracking-widest border border-purple-500/30 rounded-full px-4 py-1">OSLO, NORWAY</span>
                 </div>
-
+                
+                <!-- Main Logo Display - Using the uploaded logo style -->
                 <div class="hero-logo-container">
-                    <svg class="hero-logo" viewBox="0 0 400 140" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="And Other Stuff - The Convergence">
-                        <text x="20" y="95" font-family="Georgia, Times New Roman, serif" font-size="110" font-weight="bold" fill="url(#mainGradient)">&amp;</text>
+                    <svg class="hero-logo" viewBox="0 0 400 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Large Ampersand - Serif style like the logo -->
+                        <text x="20" y="95" font-family="Georgia, Times New Roman, serif" font-size="110" font-weight="bold" fill="url(#mainGradient)">&</text>
+                        <!-- OTHER -->
                         <text x="140" y="55" font-family="Inter, sans-serif" font-size="52" font-weight="800" fill="url(#mainGradient)" letter-spacing="-0.02em">OTHER</text>
+                        <!-- STUFF -->
                         <text x="140" y="105" font-family="Inter, sans-serif" font-size="52" font-weight="800" fill="white" letter-spacing="-0.02em">STUFF</text>
+                        <!-- THE CONVERGENCE - positioned below -->
                         <text x="140" y="130" font-family="Inter, sans-serif" font-size="16" font-weight="600" fill="#a78bfa" letter-spacing="0.15em">THE CONVERGENCE</text>
                         <defs>
                             <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -321,10 +286,10 @@
                 </div>
 
                 <p class="text-xl md:text-2xl text-gray-400 mb-4 mono">29th — 31st May 2026</p>
-
+                
                 <div class="max-w-3xl mx-auto mb-12 text-left space-y-4">
                     <p class="text-lg text-gray-300 leading-relaxed">
-                        You are part of a curated list of humans we want to get to know better—and who we want to share what <span class="font-bold text-purple-400">&amp;</span>Other Stuff is really up to.
+                        You are part of a curated list of humans we want to get to know better—and who we want to share what <span class="font-bold text-purple-400">&</span>Other Stuff is really up to.
                     </p>
                     <p class="text-gray-400 leading-relaxed">
                         Our name is an homage to the "Other Stuff" in Nostr, because we believe that's where the magic lives. It's in the unexpected ideas, the permissionless tools, and the communities that emerge when technology is truly open.
@@ -333,7 +298,7 @@
                         This isn't an ordinary gathering; it's an invitation to explore that broader landscape with us. Join a group of dreamers and builders who believe that open protocols can—and will—save the world by bringing these new possibilities to life.
                     </p>
                 </div>
-
+                
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <button onclick="goToRegistration()" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg glow">Register Now →</button>
                     <button onclick="checkAuthAndShow('location')" class="bg-white/5 hover:bg-white/10 text-white border border-white/20 font-bold py-4 px-8 rounded-full text-lg transition-all">Learn More</button>
@@ -376,56 +341,56 @@
                         <div id="userNpubDisplay" class="mt-4 mono text-xs text-purple-400 break-all"></div>
                     </div>
 
-                    <form id="registrationForm" class="space-y-6" novalidate>
+                    <form id="registrationForm" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="regFullName" class="block text-sm font-medium text-gray-300 mb-2">What's in a name? *</label>
-                                <input type="text" id="regFullName" name="fullName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="Rabble Cat">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">What's in a name? *</label>
+                                <input type="text" name="fullName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="Rabble Cat">
                             </div>
                             <div>
-                                <label for="regBadgeName" class="block text-sm font-medium text-gray-300 mb-2">Name for Badge *</label>
-                                <input type="text" id="regBadgeName" name="badgeName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="rabble">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Name for Badge *</label>
+                                <input type="text" name="badgeName" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="rabble">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="regEmail" class="block text-sm font-medium text-gray-300 mb-2">Email *</label>
-                                <input type="email" id="regEmail" name="email" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="rabble@example.com">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Email *</label>
+                                <input type="email" name="email" required class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="rabble@example.com">
                             </div>
                             <div>
-                                <label for="regSignal" class="block text-sm font-medium text-gray-300 mb-2">Signal Handle / Phone</label>
-                                <input type="text" id="regSignal" name="signal" class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="+47 000 00 000">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Signal Handle / Phone</label>
+                                <input type="text" name="signal" class="w-full input-field rounded-lg px-4 py-3 text-white" placeholder="+47 000 00 000">
                             </div>
                         </div>
 
                         <div>
-                            <label for="regDietary" class="block text-sm font-medium text-gray-300 mb-2">Dietary Requirements</label>
-                            <textarea id="regDietary" name="dietary" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Vegan, Vegetarian, Gluten Free, Allergies, etc..."></textarea>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Dietary Requirements</label>
+                            <textarea name="dietary" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Vegan, Vegetarian, Gluten Free, Allergies, etc..."></textarea>
                         </div>
 
                         <div>
-                            <label for="regTshirt" class="block text-sm font-medium text-gray-300 mb-2">T-Shirt Preferences</label>
-                            <textarea id="regTshirt" name="tshirt" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Color, Size (S/M/L/XL/XXL), Style preferences..."></textarea>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">T-Shirt Preferences</label>
+                            <textarea name="tshirt" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Color, Size (S/M/L/XL/XXL), Style preferences..."></textarea>
                         </div>
 
                         <div>
-                            <label for="regAccessibility" class="block text-sm font-medium text-gray-300 mb-2">Accessibility Needs</label>
-                            <textarea id="regAccessibility" name="accessibility" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Any accessibility requirements we should know about..."></textarea>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Accessibility Needs</label>
+                            <textarea name="accessibility" class="w-full input-field rounded-lg px-4 py-3 text-white h-20" placeholder="Any accessibility requirements we should know about..."></textarea>
                         </div>
 
                         <input type="hidden" name="npub" id="formNpub">
 
                         <div class="pt-4">
-                            <button type="submit" id="regSubmitBtn" class="w-full btn-primary text-white font-bold py-4 rounded-lg text-lg">Complete Registration</button>
+                            <button type="submit" class="w-full btn-primary text-white font-bold py-4 rounded-lg text-lg">Complete Registration</button>
                         </div>
 
-                        <div id="registrationSuccess" class="hidden bg-green-900/50 border border-green-500/50 rounded-lg p-4 text-center" role="alert">
+                        <div id="registrationSuccess" class="hidden bg-green-900/50 border border-green-500/50 rounded-lg p-4 text-center">
                             <p class="text-green-200 font-semibold">Registration successful!</p>
                             <p class="text-green-300/70 text-sm mt-1">You now have full access to all content and Signal chat.</p>
                         </div>
 
-                        <div id="alreadyRegistered" class="hidden bg-yellow-900/50 border border-yellow-500/50 rounded-lg p-4 text-center" role="alert">
+                        <div id="alreadyRegistered" class="hidden bg-yellow-900/50 border border-yellow-500/50 rounded-lg p-4 text-center">
                             <p class="text-yellow-200 font-semibold">This npub has already been registered.</p>
                             <p class="text-yellow-300/70 text-sm mt-1">Each approved npub can only register once.</p>
                         </div>
@@ -456,21 +421,30 @@
                             <div class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full font-bold mono">DAY 1</div>
                             <div>
                                 <h3 class="text-2xl font-bold">Friday, May 29th</h3>
-                                <p class="text-gray-400">Arrival &amp; Opening</p>
+                                <p class="text-gray-400">Arrival & Opening</p>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">14:00</span>
-                                <div><h4 class="font-semibold">Registration Opens</h4><p class="text-gray-400 text-sm">Pick up your badge and welcome package</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Registration Opens</h4>
+                                    <p class="text-gray-400 text-sm">Pick up your badge and welcome package</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">16:00</span>
-                                <div><h4 class="font-semibold">Opening Ceremony</h4><p class="text-gray-400 text-sm">Welcome address and event overview</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Opening Ceremony</h4>
+                                    <p class="text-gray-400 text-sm">Welcome address and event overview</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">18:00</span>
-                                <div><h4 class="font-semibold">Welcome Dinner</h4><p class="text-gray-400 text-sm">Networking dinner with fellow attendees</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Welcome Dinner</h4>
+                                    <p class="text-gray-400 text-sm">Networking dinner with fellow attendees</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -487,23 +461,38 @@
                         <div class="space-y-4">
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">09:00</span>
-                                <div><h4 class="font-semibold">Breakfast &amp; Networking</h4><p class="text-gray-400 text-sm">Morning gathering</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Breakfast & Networking</h4>
+                                    <p class="text-gray-400 text-sm">Morning gathering</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">10:00</span>
-                                <div><h4 class="font-semibold">Keynote Sessions</h4><p class="text-gray-400 text-sm">Main presentations and talks</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Keynote Sessions</h4>
+                                    <p class="text-gray-400 text-sm">Main presentations and talks</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">13:00</span>
-                                <div><h4 class="font-semibold">Lunch</h4><p class="text-gray-400 text-sm">Catered lunch at venue</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Lunch</h4>
+                                    <p class="text-gray-400 text-sm">Catered lunch at venue</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">14:30</span>
-                                <div><h4 class="font-semibold">Workshops &amp; Breakouts</h4><p class="text-gray-400 text-sm">Interactive sessions</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Workshops & Breakouts</h4>
+                                    <p class="text-gray-400 text-sm">Interactive sessions</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">19:00</span>
-                                <div><h4 class="font-semibold">Gala Dinner</h4><p class="text-gray-400 text-sm">Evening celebration</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Gala Dinner</h4>
+                                    <p class="text-gray-400 text-sm">Evening celebration</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -514,21 +503,30 @@
                             <div class="bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full font-bold mono">DAY 3</div>
                             <div>
                                 <h3 class="text-2xl font-bold">Sunday, May 31st</h3>
-                                <p class="text-gray-400">Closing &amp; Exploration</p>
+                                <p class="text-gray-400">Closing & Exploration</p>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">10:00</span>
-                                <div><h4 class="font-semibold">Brunch</h4><p class="text-gray-400 text-sm">Final gathering</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Brunch</h4>
+                                    <p class="text-gray-400 text-sm">Final gathering</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">11:30</span>
-                                <div><h4 class="font-semibold">Closing Circle</h4><p class="text-gray-400 text-sm">Reflections and next steps</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Closing Circle</h4>
+                                    <p class="text-gray-400 text-sm">Reflections and next steps</p>
+                                </div>
                             </div>
                             <div class="flex gap-4 items-start">
                                 <span class="mono text-purple-400 w-20 flex-shrink-0">13:00</span>
-                                <div><h4 class="font-semibold">Optional: Oslo Exploration</h4><p class="text-gray-400 text-sm">Guided tours and activities</p></div>
+                                <div>
+                                    <h4 class="font-semibold">Optional: Oslo Exploration</h4>
+                                    <p class="text-gray-400 text-sm">Guided tours and activities</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -606,39 +604,69 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-blue-900/50 to-purple-900/50 flex items-center justify-center"><span class="text-4xl">🏔️</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Holmenkollen</h3><p class="text-gray-400 text-sm">Iconic ski jump with panoramic views of Oslo and the fjord.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-blue-900/50 to-purple-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🏔️</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Holmenkollen</h3>
+                            <p class="text-gray-400 text-sm">Iconic ski jump with panoramic views of Oslo and the fjord.</p>
+                        </div>
                     </div>
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-green-900/50 to-blue-900/50 flex items-center justify-center"><span class="text-4xl">⛵</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Oslofjord</h3><p class="text-gray-400 text-sm">Beautiful waterfront with islands perfect for day trips.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-green-900/50 to-blue-900/50 flex items-center justify-center">
+                            <span class="text-4xl">⛵</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Oslofjord</h3>
+                            <p class="text-gray-400 text-sm">Beautiful waterfront with islands perfect for day trips.</p>
+                        </div>
                     </div>
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center"><span class="text-4xl">🎨</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Museums</h3><p class="text-gray-400 text-sm">Viking Ship Museum, Munch Museum, and Opera House.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-purple-900/50 to-pink-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🎨</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Museums</h3>
+                            <p class="text-gray-400 text-sm">Viking Ship Museum, Munch Museum, and Opera House.</p>
+                        </div>
                     </div>
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-yellow-900/50 to-orange-900/50 flex items-center justify-center"><span class="text-4xl">☕</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Coffee Culture</h3><p class="text-gray-400 text-sm">World-class coffee scene in Grünerløkka and city center.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-yellow-900/50 to-orange-900/50 flex items-center justify-center">
+                            <span class="text-4xl">☕</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Coffee Culture</h3>
+                            <p class="text-gray-400 text-sm">World-class coffee scene in Grünerløkka and city center.</p>
+                        </div>
                     </div>
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-red-900/50 to-purple-900/50 flex items-center justify-center"><span class="text-4xl">🌲</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Nordmarka Forest</h3><p class="text-gray-400 text-sm">Accessible wilderness perfect for hiking and nature walks.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-red-900/50 to-purple-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🌲</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Nordmarka Forest</h3>
+                            <p class="text-gray-400 text-sm">Accessible wilderness perfect for hiking and nature walks.</p>
+                        </div>
                     </div>
                     <div class="card rounded-2xl overflow-hidden">
-                        <div class="h-48 bg-gradient-to-br from-indigo-900/50 to-blue-900/50 flex items-center justify-center"><span class="text-4xl">🍽️</span></div>
-                        <div class="p-6"><h3 class="font-bold text-lg mb-2">Food Scene</h3><p class="text-gray-400 text-sm">From Michelin stars to street food markets.</p></div>
+                        <div class="h-48 bg-gradient-to-br from-indigo-900/50 to-blue-900/50 flex items-center justify-center">
+                            <span class="text-4xl">🍽️</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-2">Food Scene</h3>
+                            <p class="text-gray-400 text-sm">From Michelin stars to street food markets.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Signal Group Chat Widget — HIDDEN until authenticated -->
-    <div id="signal-chat-widget" class="hidden" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-        <button onclick="toggleSignalChat()" aria-label="Open Signal group chat" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); display: flex; align-items: center; justify-content: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+    <!-- Signal Group Chat Widget -->
+    <div id="signal-chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <button onclick="toggleSignalChat()" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); display: flex; align-items: center; justify-content: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM13 11V7H11V11H7V13H11V17H13V13H17V11H13Z"/>
             </svg>
         </button>
         <div id="signalChatWindow" style="position: fixed; bottom: 90px; right: 20px; width: 350px; height: 400px; background: #1a1a1a; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
@@ -649,191 +677,148 @@
             <div style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
                 <p style="color: #9ca3af; margin-bottom: 20px;">Connect with other attendees on Signal</p>
-                <a id="signalGroupLink" href="#" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Join Signal Group</a>
+                <a href="https://signal.group/#CjQKIPNfnDwCkcYdM_SyZ5hPgRBwQpSE8-KM12y1WkKUcr6OEhBxoivrUKuX3_TqrKzps1AD" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Join Signal Group</a>
             </div>
         </div>
     </div>
 
     <script>
-    (function() {
-        'use strict';
+        // Approved npubs list - including the new one
+        const approvedNpubs = [
+            'npub1wmr34t36fy03m8hvgl96zl3znndyzyaqhwmwdtshwmtkg03fetaqhjg240',
+            // Add other approved npubs here
+        ];
 
-        // ─── Configuration ────────────────────────────────────────────
-        const NPUBS_JSON_PATH = 'npubs.json';
-        // Signal link is kept in JS only, not in HTML, so it's slightly less trivially exposed
-        const SIGNAL_GROUP_URL = 'https://signal.group/#CjQKIPNfnDwCkcYdM_SyZ5hPgRBwQpSE8-KM12y1WkKUcr6OEhBxoivrUKuX3_TqrKzps1AD';
+        // Track registered npubs to prevent duplicate registration
+        const registeredNpubs = new Set();
 
-        // ─── State ────────────────────────────────────────────────────
-        let approvedNpubs = [];
-        let npubsLoaded = false;
-        const registeredNpubs = new Set(); // NOTE: resets on reload — needs backend for persistence
-        let currentUser = null;
-
-        // ─── Load approved npubs from npubs.json ──────────────────────
-        async function loadApprovedNpubs() {
-            const loader = document.getElementById('loadingBar');
-            loader.classList.remove('hidden');
-            try {
-                const resp = await fetch(NPUBS_JSON_PATH);
-                if (!resp.ok) throw new Error('Failed to load npubs.json: ' + resp.status);
-                const data = await resp.json();
-                if (Array.isArray(data.npubs)) {
-                    approvedNpubs = data.npubs;
-                } else if (Array.isArray(data)) {
-                    approvedNpubs = data;
-                } else {
-                    throw new Error('npubs.json: expected { "npubs": [...] } or [...]');
-                }
-                npubsLoaded = true;
-                console.log('[AOS] Loaded ' + approvedNpubs.length + ' approved npubs');
-            } catch (err) {
-                console.error('[AOS] Failed to load approved npubs:', err);
-                showNotification('Error loading configuration. Please refresh.', 'error');
-            } finally {
-                loader.classList.add('hidden');
-            }
-        }
-
+        // Check if npub is approved
         function isApprovedNpub(npub) {
             return approvedNpubs.includes(npub);
         }
 
+        // Check if npub is already registered
         function isAlreadyRegistered(npub) {
             return registeredNpubs.has(npub);
         }
 
-        // ─── SPA redirect recovery from 404.html ─────────────────────
-        function handleSpaRedirect() {
-            const redirect = sessionStorage.getItem('redirect');
-            if (redirect) {
-                sessionStorage.removeItem('redirect');
-                try {
-                    const url = new URL(redirect);
-                    const hash = url.hash.slice(1);
-                    if (hash && hash !== 'home') {
-                        showSection(hash);
-                        return true;
-                    }
-                } catch (e) { /* ignore malformed */ }
+        // Current user state
+        let currentUser = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check URL hash and show appropriate section
+            const hash = window.location.hash.slice(1);
+            if (hash && hash !== 'home') {
+                showSection(hash);
             }
-            return false;
-        }
-
-        // ─── Initialization ──────────────────────────────────────────
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Load npubs from external JSON
-            await loadApprovedNpubs();
-
-            // Handle SPA redirect from 404.html
-            if (!handleSpaRedirect()) {
-                const hash = window.location.hash.slice(1);
-                if (hash && hash !== 'home') {
-                    showSection(hash);
-                }
-            }
-
+            
+            // Listen for hash changes
             window.addEventListener('hashchange', function() {
                 const hash = window.location.hash.slice(1);
-                if (hash) showSection(hash);
+                if (hash) {
+                    showSection(hash);
+                }
             });
 
+            // Setup registration form
             setupRegistrationForm();
         });
 
-        // ─── Navigation ──────────────────────────────────────────────
+        // Show section - uses hash-based navigation without page reload
         function showSection(sectionId) {
-            document.querySelectorAll('main > section').forEach(function(section) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
                 section.classList.remove('active-section');
                 section.classList.add('hidden-section');
             });
-            var target = document.getElementById(sectionId);
-            if (target) {
-                target.classList.remove('hidden-section');
-                target.classList.add('active-section');
-                window.location.hash = sectionId;
+            
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden-section');
+                targetSection.classList.add('active-section');
+                
+                // Update hash without triggering reload
+                if (window.location.hash !== '#' + sectionId) {
+                    history.pushState(null, null, '#' + sectionId);
+                }
             }
+            
+            // Close mobile menu if open
             document.getElementById('mobileMenu').classList.add('hidden');
+            
+            // Scroll to top
             window.scrollTo(0, 0);
         }
 
+        // Check auth before showing protected section
         function checkAuthAndShow(sectionId) {
-            if (!currentUser) { toggleAuth(); return; }
+            if (!currentUser) {
+                toggleAuth();
+                return;
+            }
             showSection(sectionId);
         }
 
+        // Go to registration
         function goToRegistration() {
-            if (!currentUser) { toggleAuth(); return; }
+            if (!currentUser) {
+                toggleAuth();
+                return;
+            }
             showSection('registration');
         }
 
+        // Toggle auth modal
         function toggleAuth() {
-            var modal = document.getElementById('authModal');
+            const modal = document.getElementById('authModal');
             modal.classList.toggle('hidden');
             document.getElementById('authError').classList.add('hidden');
             document.getElementById('manualNpub').value = '';
         }
 
+        // Toggle mobile menu
         function toggleMobileMenu() {
-            var menu = document.getElementById('mobileMenu');
-            var btn = menu.previousElementSibling;
-            var isHidden = menu.classList.toggle('hidden');
-            if (btn) btn.setAttribute('aria-expanded', !isHidden);
+            document.getElementById('mobileMenu').classList.toggle('hidden');
         }
 
-        // ─── Auth flows ──────────────────────────────────────────────
+        // Auth with Nostr extension
         async function authWithExtension() {
-            if (!npubsLoaded) {
-                showAuthError('Configuration still loading. Please try again.');
-                return;
-            }
             document.getElementById('authOptions').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
-
+            
             try {
                 if (!window.nostr) {
-                    throw new Error('Nostr extension not found. Please install a NIP-07 compatible extension (e.g. Alby, nos2x).');
+                    throw new Error('Nostr extension not found. Please install a NIP-07 compatible extension.');
                 }
-                if (!window.NostrTools || !window.NostrTools.nip19) {
-                    throw new Error('Nostr tools library failed to load. Please refresh the page.');
-                }
-                var pubkey = await window.nostr.getPublicKey();
-                var npub = window.NostrTools.nip19.npubEncode(pubkey);
+                
+                const pubkey = await window.nostr.getPublicKey();
+                const npub = window.NostrTools.nip19.npubEncode(pubkey);
+                
                 await verifyAndLogin(npub);
             } catch (error) {
                 showAuthError(error.message);
             }
         }
 
+        // Auth manually with npub
         async function authManual() {
-            if (!npubsLoaded) {
-                showAuthError('Configuration still loading. Please try again.');
+            const npub = document.getElementById('manualNpub').value.trim();
+            
+            if (!npub) {
+                showAuthError('Please enter an npub');
                 return;
             }
-            var npub = document.getElementById('manualNpub').value.trim();
-
-            if (!npub) { showAuthError('Please enter an npub'); return; }
+            
             if (!npub.startsWith('npub1')) {
-                showAuthError('Invalid npub format. It should start with npub1.');
+                showAuthError('Invalid npub format');
                 return;
             }
-
-            try {
-                if (!window.NostrTools || !window.NostrTools.nip19) {
-                    throw new Error('Nostr tools library failed to load. Please refresh the page.');
-                }
-                var decoded = window.NostrTools.nip19.decode(npub);
-                if (decoded.type !== 'npub') {
-                    showAuthError('Invalid npub format.');
-                    return;
-                }
-            } catch (e) {
-                showAuthError('Invalid npub format. Please check and try again.');
-                return;
-            }
-
+            
             document.getElementById('authOptions').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
-
+            
             try {
                 await verifyAndLogin(npub);
             } catch (error) {
@@ -841,150 +826,166 @@
             }
         }
 
+        // Verify and login
         async function verifyAndLogin(npub) {
-            await new Promise(function(resolve) { setTimeout(resolve, 800); });
-
+            // Simulate verification delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
             if (!isApprovedNpub(npub)) {
                 throw new Error('This npub is not on the approved list. If you believe this is an error, please contact the organizers.');
             }
-
-            currentUser = { npub: npub };
-
-            // Update nav
-            var authBtn = document.getElementById('authBtn');
-            authBtn.textContent = '[ LOGOUT ]';
-            authBtn.onclick = logout;
-            authBtn.setAttribute('aria-label', 'Logout');
-
+            
+            // Success
+            currentUser = { npub };
+            
+            // Update UI
+            document.getElementById('authBtn').textContent = '[ LOGOUT ]';
+            document.getElementById('authBtn').onclick = logout;
+            
+            // Show protected nav items
             document.getElementById('exploreNavBtn').classList.remove('nav-hidden');
             document.getElementById('exploreNavBtn').classList.add('nav-visible');
             document.getElementById('exploreNavBtnMobile').classList.remove('nav-hidden');
             document.getElementById('exploreNavBtnMobile').classList.add('nav-visible');
-
+            
+            // Unlock protected sections
             unlockProtectedSections();
-
-            // Show Signal widget + inject link
-            var widget = document.getElementById('signal-chat-widget');
-            widget.classList.remove('hidden');
-            document.getElementById('signalGroupLink').href = SIGNAL_GROUP_URL;
-
+            
+            // Close modal
             toggleAuth();
+            
+            // Show success notification
             showNotification('Successfully authenticated!', 'success');
         }
 
+        // Show auth error
         function showAuthError(message) {
             document.getElementById('authLoading').classList.add('hidden');
             document.getElementById('authOptions').classList.remove('hidden');
-            var errorDiv = document.getElementById('authError');
+            const errorDiv = document.getElementById('authError');
             errorDiv.textContent = message;
             errorDiv.classList.remove('hidden');
         }
 
+        // Logout
         function logout() {
             currentUser = null;
-            var authBtn = document.getElementById('authBtn');
-            authBtn.textContent = '[ LOGIN ]';
-            authBtn.onclick = toggleAuth;
-            authBtn.setAttribute('aria-label', 'Login with Nostr');
-
+            document.getElementById('authBtn').textContent = '[ LOGIN ]';
+            document.getElementById('authBtn').onclick = toggleAuth;
+            
+            // Hide protected nav items
             document.getElementById('exploreNavBtn').classList.add('nav-hidden');
             document.getElementById('exploreNavBtn').classList.remove('nav-visible');
             document.getElementById('exploreNavBtnMobile').classList.add('nav-hidden');
             document.getElementById('exploreNavBtnMobile').classList.remove('nav-visible');
-
-            // Hide Signal widget
-            document.getElementById('signal-chat-widget').classList.add('hidden');
-            document.getElementById('signalChatWindow').style.display = 'none';
-            document.getElementById('signalGroupLink').href = '#';
-
+            
+            // Lock protected sections
             lockProtectedSections();
+            
             showNotification('Logged out', 'info');
         }
 
-        // ─── Content locking ─────────────────────────────────────────
+        // Unlock protected sections
         function unlockProtectedSections() {
-            document.querySelectorAll('.protected-content').forEach(function(el) {
+            document.querySelectorAll('.protected-content').forEach(el => {
                 el.classList.add('unlocked');
             });
-            document.querySelectorAll('.lock-overlay').forEach(function(el) {
+            document.querySelectorAll('.lock-overlay').forEach(el => {
                 el.style.display = 'none';
             });
+            
+            // Update registration form with user npub
             if (currentUser) {
                 document.getElementById('formNpub').value = currentUser.npub;
                 document.getElementById('userNpubDisplay').textContent = currentUser.npub;
             }
         }
 
+        // Lock protected sections
         function lockProtectedSections() {
-            document.querySelectorAll('.protected-content').forEach(function(el) {
+            document.querySelectorAll('.protected-content').forEach(el => {
                 el.classList.remove('unlocked');
             });
-            document.querySelectorAll('.lock-overlay').forEach(function(el) {
+            document.querySelectorAll('.lock-overlay').forEach(el => {
                 el.style.display = 'flex';
             });
         }
 
-        // ─── Registration ────────────────────────────────────────────
+        // Setup registration form
         function setupRegistrationForm() {
-            var form = document.getElementById('registrationForm');
+            const form = document.getElementById('registrationForm');
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-
-                var npub = document.getElementById('formNpub').value;
-
+                
+                const npub = document.getElementById('formNpub').value;
+                
+                // Check if already registered
                 if (isAlreadyRegistered(npub)) {
                     document.getElementById('alreadyRegistered').classList.remove('hidden');
                     document.getElementById('registrationSuccess').classList.add('hidden');
                     return;
                 }
-
-                // TODO: Send registration data to a backend / Nostr relay / serverless function
-                // Currently data only lives in-memory and is lost on page reload
+                
+                // Mark as registered
                 registeredNpubs.add(npub);
-
+                
+                // Show success
                 document.getElementById('registrationSuccess').classList.remove('hidden');
                 document.getElementById('alreadyRegistered').classList.add('hidden');
-
-                form.querySelectorAll('input, textarea, button[type="submit"]').forEach(function(el) {
+                
+                // Disable form
+                form.querySelectorAll('input, textarea, button[type="submit"]').forEach(el => {
                     el.disabled = true;
                 });
-
+                
                 showNotification('Registration completed successfully!', 'success');
             });
         }
 
-        // ─── Signal widget ───────────────────────────────────────────
+        // Toggle Signal chat widget
         function toggleSignalChat() {
-            var chatWindow = document.getElementById('signalChatWindow');
-            chatWindow.style.display = (chatWindow.style.display === 'none' || !chatWindow.style.display) ? 'flex' : 'none';
+            const chatWindow = document.getElementById('signalChatWindow');
+            if (chatWindow.style.display === 'none' || !chatWindow.style.display) {
+                chatWindow.style.display = 'flex';
+            } else {
+                chatWindow.style.display = 'none';
+            }
         }
 
-        // ─── Notifications ───────────────────────────────────────────
+        // Show notification
         function showNotification(message, type) {
-            var notification = document.createElement('div');
-            var bg = type === 'success' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-                     type === 'error' ? '#991b1b' : '#374151';
-            notification.style.cssText = 'position:fixed;top:80px;right:20px;padding:16px 24px;border-radius:8px;color:white;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;background:' + bg + ';';
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#374151'};
+            `;
             notification.textContent = message;
-            notification.setAttribute('role', 'alert');
             document.body.appendChild(notification);
-            setTimeout(function() {
+            
+            setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(function() { notification.remove(); }, 300);
+                setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
-
-        // ─── Expose to inline handlers ───────────────────────────────
-        window.showSection = showSection;
-        window.checkAuthAndShow = checkAuthAndShow;
-        window.goToRegistration = goToRegistration;
-        window.toggleAuth = toggleAuth;
-        window.toggleMobileMenu = toggleMobileMenu;
-        window.authWithExtension = authWithExtension;
-        window.authManual = authManual;
-        window.toggleSignalChat = toggleSignalChat;
-
-    })();
     </script>
+    
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
 </body>
 </html>
